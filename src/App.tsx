@@ -6,10 +6,31 @@ import {
 } from "@material-ui/core";
 import { Provider as ReduxProvider } from "react-redux";
 import { reduxStore } from "./store";
-import { Routes } from "./views/Routes";
+import { RootRoutes } from "./RootRoutes";
 import { BrowserRouter } from "react-router-dom";
 
-const theme = createMuiTheme({});
+const theme = createMuiTheme({
+  palette: {
+    text: {
+      primary: "#1AAF71",
+      secondary: "#1E293B",
+    },
+    background: {
+      default: "#FFFFFF",
+    },
+  },
+  typography: {
+    fontFamily: "Spartan",
+    body1: {
+      fontSize: 14,
+      fontWeight: 600,
+    },
+    subtitle1: {
+      fontSize: 12,
+      fontWeight: 600,
+    },
+  },
+});
 
 function App() {
   return (
@@ -17,7 +38,7 @@ function App() {
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
-          <Routes />
+          <RootRoutes />
         </BrowserRouter>
       </MuiThemeProvider>
     </ReduxProvider>
