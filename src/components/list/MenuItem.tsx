@@ -12,7 +12,7 @@ interface MenuItemProps {
 const useStyles = makeStyles(() =>
   createStyles({
     listItem: {
-      padding: 16,
+      padding: 18,
     },
     listItemActive: {
       backgroundColor: "#F0FDF4",

@@ -9,7 +9,7 @@ import {
 import ProjectIcon from "../assets/images/project.svg";
 import DorgLogoIcon from "../assets/images/dorg-logo.svg";
 import { DRAWER_WIDTH } from "./MainLayout";
-import { MenuItem } from "./List/MenuItem";
+import { MenuItem } from "./list/MenuItem";
 
 interface NavPanelProps {
   open: boolean;

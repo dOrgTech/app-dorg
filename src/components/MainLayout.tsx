@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    views: {
+      padding: 24,
+    },
   })
 );
 
@@ -33,7 +36,9 @@ export function MainLayout() {
       <NavPanel open={panelOpen} onToggle={handleDrawerToggle} />
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <ViewRoutes />
+        <div className={classes.views}>
+          <ViewRoutes />
+        </div>
       </main>
     </div>
   );

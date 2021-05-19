@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "none",
       paddingLeft: 40,
       paddingRight: 40,
+      backgroundColor: "#FFFFFF",
       [theme.breakpoints.up("sm")]: {
         width: `calc(100% - ${DRAWER_WIDTH}px)`,
         marginLeft: DRAWER_WIDTH,
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const MainAppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
   const classes = useStyles();
   return (
-    <AppBar position="fixed" color="transparent" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
         <IconButton
           color="inherit"
@@ -75,7 +76,7 @@ export const MainAppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography variant="subtitle1" noWrap>
+            <Typography variant="subtitle1" color="textPrimary" noWrap>
               0x7301cf-0eb0aa6
             </Typography>
           </Grid>
