@@ -1,8 +1,10 @@
-const PaymentSplitter = artifacts.require("PaymentSplitter");
-const Clones = artifacts.require("Clones");
+const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
+
 module.exports = function (deployer) {
-  deployer.deploy(PaymentSplitter,["0xa2e1624116Ac3C9deC0e4F0d697063f30c732F2D"],[1])
-  .then(function() {
-    return deployer.deploy(Clones, PaymentSplitter.address);
-  });
+  deployer.deploy(dOrgProjectFactory)
+    .then(function(c){
+      return c.createProject(
+      "0x28fd4cD79fa36cD71B37CFbCe592aB86Bf2701dD",
+      "0x6Cea126D014D0D7D1A4cB9D72e929BDea39dB9aE"
+    )});
 };

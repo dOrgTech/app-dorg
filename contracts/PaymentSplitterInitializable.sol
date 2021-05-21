@@ -2,9 +2,10 @@
 
 pragma solidity ^0.8.0;
 
-import "./Address.sol";
-import "./Context.sol";
-import "./SafeMath.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 /**
  * @title PaymentSplitter
@@ -19,7 +20,7 @@ import "./SafeMath.sol";
  * accounts but kept in this contract, and the actual transfer is triggered as a separate step by calling the {release}
  * function.
  */
-contract PaymentSplitter is Context {
+contract PaymentSplitterInitializable is Initializable, Context {
     event PayeeAdded(address account, uint256 shares);
     event PaymentReleased(address to, uint256 amount);
     event PaymentReceived(address from, uint256 amount);
@@ -38,11 +39,10 @@ contract PaymentSplitter is Context {
      * All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
      * duplicates in `payees`.
      */
-    constructor (address[] memory payees, uint256[] memory shares_) payable {
-        // solhint-disable-next-line max-line-length
+
+    function initialize(address[] memory payees, uint256[] memory shares_) initializer public payable{
         require(payees.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
         require(payees.length > 0, "PaymentSplitter: no payees");
-
         for (uint256 i = 0; i < payees.length; i++) {
             _addPayee(payees[i], shares_[i]);
         }
