@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract dOrgProjectFactory {
 
-    address admin = address(0xD54E9424ea8536e617f72402fB901FBe3358B4d0);
     address immutable splitterImplementation;
 
     constructor() {
