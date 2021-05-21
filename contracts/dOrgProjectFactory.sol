@@ -7,19 +7,20 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract dOrgProjectFactory {
 
+
     address immutable dorgproj;
+    address[] payees;
+    uint256[] shares;
 
     constructor() {
         dorgproj = address(new dOrgProject());
     }
 
     function createProject(address finder, address multisig) external returns (address){
-        
-        address[] memory payees;
+
         payees[0] = finder;
         payees[1] = multisig;
 
-        uint256[] memory shares;
         shares[0] = 20;
         shares[1] = 80;
 
