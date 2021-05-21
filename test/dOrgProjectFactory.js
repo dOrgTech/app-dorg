@@ -4,26 +4,13 @@ let abi = [ { "anonymous": false, "inputs": [ { "indexed": false, "internalType"
 contract("dOrgProjectFactory", accounts => {
   it("should create a new project", () =>
     dOrgProjectFactory.deployed()
-      .then(instance => { 
-        return instance.createProject.call(
-        accounts[1],
-        accounts[2]
-      )})
+      .then(instance => instance.createProject(accounts[1],accounts[2]))
       .then(cloneAddress => {
+        console.log(cloneAddress)
         let contract = new web3.eth.Contract(abi,cloneAddress)
         return web3.eth.getAccounts().then(accounts => {
-          return contract.methods.totalShares().send({from:accounts[0]})
+          return contract.methods.totalShares().call({from:accounts[0]})
         })
       })
-      .then(result => console.log(result))
-      .catch(e => console.log(e))
+      .then(console.log)
 )});
-
-// .then(result => {
-//   console.log(result)
-// assert.equal(
-//   balance.valueOf(),
-//   10000,
-//   "10000 wasn't in the first account"
-// );
-// }));
