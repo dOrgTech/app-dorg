@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 contract dOrgProjectFactory {
 
     address immutable splitterImplementation;
+    event CloneAddress(address cloneAddress);
+    event LogicAddress(address logicAddress);
 
     constructor() {
         splitterImplementation = address(new PaymentSplitterInitializable());
@@ -28,6 +30,8 @@ contract dOrgProjectFactory {
         clone = payable(Clones.clone(splitterImplementation));
         PaymentSplitterInitializable(clone).initialize(payees,shares);
         
+        emit CloneAddress(clone);
+        emit LogicAddress(splitterImplementation);
         return clone;
     }
 }
