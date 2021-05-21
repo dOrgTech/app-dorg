@@ -16,16 +16,15 @@ contract dOrgProjectFactory {
 
     function createProject(address finder, address multisig) external returns (address){
         
-        address[] memory payees;
-        payees[0] = admin;
-        payees[1] = finder;
-        payees[2] = multisig;
+        address[] memory payees = new address[](2);
+        uint256[] memory shares = new uint256[](2);
 
-        uint256[] memory shares;
-        shares[0] = 10;
-        shares[1] = 10;
-        shares[2] = 80;
+        payees[0] = finder;
+        payees[1] = multisig;
 
+        shares[0] = 20;
+        shares[1] = 80;
+        
         address payable clone;
         clone = payable(Clones.clone(splitterImplementation));
         PaymentSplitterInitializable(clone).initialize(payees,shares);
