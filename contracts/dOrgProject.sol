@@ -2,13 +2,12 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "./PaymentSplitterInitializable.sol";
 
-contract dOrgProject is Initializable {
-    PaymentSplitter project; 
+contract dOrgProject is Initializable, PaymentSplitterInitializable {
 
     function initialize(address[] memory payees, uint256[] memory shares_) public initializer {
-        project = new PaymentSplitter(payees, shares_);
+        PaymentSplitterInitializable.initialize(payees, shares_);
     }
 }
