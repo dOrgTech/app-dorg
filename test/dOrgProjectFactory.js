@@ -19,7 +19,6 @@ contract("dOrgProjectFactory", async (accounts) => {
   before(async () => {
     factory = await dOrgProjectFactory.deployed()
     result = await factory.createProject(treasuryWallet, finderWallet, projectWallet)
-    console.log(result)
     const cloneAddress = result.logs[0].args['0']
     projectClone = await PaymentSplitterInitializable.at(cloneAddress);
   })
