@@ -40,7 +40,7 @@ contract PaymentSplitterInitializable is Initializable, Context {
      * duplicates in `payees`.
      */
 
-    function initialize(address[] memory payees, uint256[] memory shares_) initializer public payable{
+    function initialize(address[] memory payees, uint256[] memory shares_) initializer virtual public payable {
         require(payees.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
         require(payees.length > 0, "PaymentSplitter: no payees");
         for (uint256 i = 0; i < payees.length; i++) {

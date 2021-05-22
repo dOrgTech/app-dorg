@@ -2,13 +2,14 @@
 // jason@dorg.tech
 
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
-const PaymentSplitterInitializable = artifacts.require("PaymentSplitterInitializable");
+const dOrgProject = artifacts.require("dOrgProject");
 
 contract("dOrgProjectFactory", async (accounts) => {
   
   let factory;
   let projectClone;
 
+  let projectName = "Test Project"
   let treasuryWallet = accounts[1];
   let finderWallet = accounts[2];
   let projectWallet = accounts[3];
@@ -18,9 +19,14 @@ contract("dOrgProjectFactory", async (accounts) => {
 
   before(async () => {
     factory = await dOrgProjectFactory.deployed()
-    result = await factory.createProject(treasuryWallet, finderWallet, projectWallet)
+    result = await factory.createProject(projectName, treasuryWallet, finderWallet, projectWallet)
     const cloneAddress = result.logs[0].args['0']
-    projectClone = await PaymentSplitterInitializable.at(cloneAddress);
+    projectClone = await dOrgProject.at(cloneAddress);
+  })
+
+  it('Should have name `Test Project.`', async () => {
+    let pName = await projectClone.getName();
+    assert(pName, projectName);
   })
 
   it("Project should have total shares of 100, with breakdown of [10,10,80].", async () => {
