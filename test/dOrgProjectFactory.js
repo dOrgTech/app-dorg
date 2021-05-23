@@ -24,6 +24,11 @@ contract("dOrgProjectFactory", async (accounts) => {
     projectClone = await dOrgProject.at(cloneAddress);
   })
 
+  // it('Cannot be initialized twice.', async () => {
+  //   let tryToReInitialize = projectClone.initialize(projectName, wallets, [10,10,80]);
+  //   expect(tryToReInitialize).to.throw(RuntimeError)
+  // })
+
   it('Should have name `Test Project.`', async () => {
     let pName = await projectClone.getName();
     assert(pName, projectName);
