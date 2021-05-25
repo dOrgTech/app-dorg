@@ -12,16 +12,15 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract dOrgProjectFactory {
 
-    address immutable dorgproj;
+    address public immutable logicImplementation;
     event CloneAddress(address cloneAddress);
-    event LogicAddress(address logicAddress);
 
     /**
      * @dev Initializes `dOrgProject` instance. 
      */
 
     constructor() {
-        dorgproj = address(new dOrgProject());
+        logicImplementation = address(new dOrgProject());
     }
 
     /**
@@ -32,7 +31,7 @@ contract dOrgProjectFactory {
      * duplicates in `payees`.
      */
 
-    function createProject(string calldata _projectName, address _treasuryWallet, address _finderWallet, address _projectWallet) external returns (address){
+    function createProject(string calldata _projectName, address _treasuryWallet, address _finderWallet, address _projectWallet) external{
         
         string memory projectName; 
         projectName = _projectName;
@@ -49,12 +48,11 @@ contract dOrgProjectFactory {
         shares[2] = 80;
         
         address payable clone;
-        clone = payable(Clones.clone(dorgproj));
+        clone = payable(Clones.clone(logicImplementation));
         dOrgProject(clone).initialize(projectName, payees, shares);
         
         emit CloneAddress(clone);
-        emit LogicAddress(dorgproj);
-        return clone;
+
     }
 
 }

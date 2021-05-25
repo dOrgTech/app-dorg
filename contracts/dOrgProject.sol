@@ -13,11 +13,7 @@ import "./PaymentSplitterInitializable.sol";
 
 contract dOrgProject is Initializable, PaymentSplitterInitializable {
 
-    string projectName;
-
-    function getName() public view returns (string memory) {
-        return projectName;
-    }
+    string public projectName;
 
     function initialize(string memory _projectName, address[] memory _payees, uint256[] memory _shares) initializer public payable {
         projectName = _projectName;
