@@ -32,7 +32,7 @@ contract dOrgProjectFactory {
      * duplicates in `payees`.
      */
 
-    function createProject(string calldata _projectName, address _treasuryWallet, address _finderWallet, address _projectWallet) public returns (address){
+    function createProject(string calldata _projectName, address _treasuryWallet, address _finderWallet, address _projectWallet) external returns (address){
         
         string memory projectName; 
         projectName = _projectName;
