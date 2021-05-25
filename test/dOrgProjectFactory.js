@@ -30,7 +30,7 @@ contract("dOrgProjectFactory", async (accounts) => {
   // })
 
   it('Should have name `Test Project.`', async () => {
-    let pName = await projectClone.getName();
+    let pName = await projectClone.projectName;
     assert(pName, projectName);
   })
 
