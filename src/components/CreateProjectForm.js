@@ -5,13 +5,16 @@ import TextField from "@material-ui/core/TextField";
 import { ActiveButton } from "./button/ActiveButton";
 import Web3 from "web3";
 
-let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+let web3 = new Web3("ws://localhost:8545");
+let abi = [{"inputs":[], "stateMutability":"nonpayable", "type":"constructor"}, {"anonymous":false, "inputs":[{"indexed":false, "internalType":"address", "name":"cloneAddress", "type":"address"}], "name":"CloneAddress", "type":"event"}, {"anonymous":false, "inputs":[{"indexed":false, "internalType":"address", "name":"logicAddress", "type":"address"}], "name":"LogicAddress", "type":"event"}, {"inputs":[{"internalType":"string", "name":"_projectName", "type":"string"}, {"internalType":"address", "name":"_treasuryWallet", "type":"address"}, {"internalType":"address", "name":"_finderWallet", "type":"address"}, {"internalType":"address", "name":"_projectWallet", "type":"address"}], "name":"createProject", "outputs":[{"internalType":"address", "name":"", "type":"address"}], "stateMutability":"nonpayable", "type":"function"}];
+let contractAddress = "0x97583cC9FC64839424ac7b089CBC678446f606Ef";
+let contract = new web3.eth.Contract(abi,  contractAddress);
 
 const defaultValues = {
-  projectName: "Test",
-  treasuryWallet: "0x7167A082d8969DCC90063BAa9A2cb1a23161D464",
-  finderWallet: "0x4BC2e10eAD9Bf0d0d5ff269eA6E9035024B63eDB",
-  projectWallet: "0xc901613926cA4cf170B41908Be6dE63dbd24C387",
+      projectName: "",
+      treasuryWallet: "",
+      finderWallet: "",
+      projectWallet: "",
 };
 
 export const CreateProjectForm = () => {
@@ -19,23 +22,22 @@ export const CreateProjectForm = () => {
   const [formValues,  setFormValues] = useState(defaultValues);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name)
     setFormValues({
       ...formValues,
       [name]: value,
     });
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formValues);
-    
-    web3.eth.getAccounts().then(accounts => {
-      let abi = [{"inputs":[], "stateMutability":"nonpayable", "type":"constructor"}, {"anonymous":false, "inputs":[{"indexed":false, "internalType":"address", "name":"cloneAddress", "type":"address"}], "name":"CloneAddress", "type":"event"}, {"anonymous":false, "inputs":[{"indexed":false, "internalType":"address", "name":"logicAddress", "type":"address"}], "name":"LogicAddress", "type":"event"}, {"inputs":[{"internalType":"string", "name":"_projectName", "type":"string"}, {"internalType":"address", "name":"_treasuryWallet", "type":"address"}, {"internalType":"address", "name":"_finderWallet", "type":"address"}, {"internalType":"address", "name":"_projectWallet", "type":"address"}], "name":"createProject", "outputs":[{"internalType":"address", "name":"", "type":"address"}], "stateMutability":"nonpayable", "type":"function"}];
-      let contractAddress = "0xAe8a7341cd697B119f04e851E543C15b824C668E";
-      let contract = new web3.eth.Contract(abi,  contractAddress);
-      console.log(accounts)
-      contract.methods.createProject(formValues["projectName"],formValues["treasuryWallet"],formValues["finderWallet"],formValues["projectWallet"]).send({from:accounts[12]})
+    web3.eth.getAccounts().then(a => {
+      contract.methods.createProject('test',a[1],a[2],a[3])
+        .send({from:a[4],gas:1000000})
+        .then(console.log)
     })
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <Grid container alignItems="center" justify="center" direction="column">
