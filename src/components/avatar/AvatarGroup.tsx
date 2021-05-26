@@ -12,11 +12,15 @@ const useStyles = makeStyles(() =>
   createStyles({
     avatarGroupItem: {
       display: "inline-block",
-      marginLeft: -16,
+      marginLeft: 16,
     },
     avatarsContainer: {
       "& > *:not(p)": {
         display: "inline-block",
+        height: 30,
+        width: 30,
+      },
+      "& > *:not(p):not(:first-child)": {
         marginLeft: -16,
       },
     },
@@ -51,7 +55,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       className={classes.avatarsContainer}
       display="flex"
       alignItems="center"
-      justifyContent="center"
     >
       {list} {text}
     </Box>

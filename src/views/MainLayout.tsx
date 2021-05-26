@@ -2,7 +2,7 @@ import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { MainAppBar } from "./MainAppBar";
 import { NavPanel } from "./NavPanel";
-import { ViewRoutes } from "../views/ViewRoutes";
+import { ViewRoutes } from "./ViewRoutes";
 
 export const DRAWER_WIDTH = 240;
 
