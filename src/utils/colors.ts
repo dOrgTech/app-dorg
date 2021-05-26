@@ -1,4 +1,8 @@
 export const COLORS = {
+  amber: {
+    50: "#FFFBEB",
+    600: "#D97706",
+  },
   blueGray: {
     30: "#cbd5e140",
     50: "#F8FAFC",

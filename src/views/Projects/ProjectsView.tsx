@@ -6,6 +6,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { ProposalCard } from "../../components/card/ProposalCard";
 import { Proposal } from "../../store/reducers/proposals/model";
 import AvatarImg from "../../assets/images/avatar.png";
+import { ProjectsTable } from "./ProjectsTable";
 
 const proposals: Proposal[] = [
   {
@@ -89,6 +90,12 @@ export const ProjectsView: React.FC = () => {
           ))}
         </Grid>
       </Box>
+
+      <Typography variant="h2" className={classes.proposalTitle}>
+        Projects Overview
+      </Typography>
+
+      <ProjectsTable />
     </div>
   );
 };
