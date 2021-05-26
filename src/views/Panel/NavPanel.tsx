@@ -1,15 +1,16 @@
 import React from "react";
-import { Hidden, Drawer, List } from "@material-ui/core";
+import { Hidden, Drawer, List, Box } from "@material-ui/core";
 import {
   createStyles,
   makeStyles,
   Theme,
   useTheme,
 } from "@material-ui/core/styles";
-import ProjectIcon from "../assets/images/project.svg";
-import DorgLogoIcon from "../assets/images/dorg-logo.svg";
-import { DRAWER_WIDTH } from "./MainLayout";
-import { MenuItem } from "../components/list/MenuItem";
+import ProjectIcon from "../../assets/images/project.svg";
+import DorgLogoIcon from "../../assets/images/dorg-logo.svg";
+import { DRAWER_WIDTH } from "../MainLayout";
+import { MenuItem } from "../../components/list/MenuItem";
+import { DaoInfoCard } from "./DaoInfoCard";
 
 interface NavPanelProps {
   open: boolean;
@@ -46,7 +47,7 @@ export const NavPanel: React.FC<NavPanelProps> = ({ open, onToggle }) => {
   const theme = useTheme();
 
   const drawer = (
-    <div>
+    <Box display="flex" flexDirection="column" height="100%">
       <div className={classes.logoContainer}>
         <img src={DorgLogoIcon} alt="Project Icon" />
       </div>
@@ -57,7 +58,9 @@ export const NavPanel: React.FC<NavPanelProps> = ({ open, onToggle }) => {
           icon={<img src={ProjectIcon} alt="Project Icon" />}
         />
       </List>
-    </div>
+      <Box flexGrow="1" />
+      <DaoInfoCard />
+    </Box>
   );
 
   return (

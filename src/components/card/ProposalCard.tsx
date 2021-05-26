@@ -62,7 +62,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
           <Grid item xs={1} alignContent="center">
             <img src={DorgIcon} alt="Dorg Icon" />
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             <Typography
               variant="h4"
               className={classes.title}
