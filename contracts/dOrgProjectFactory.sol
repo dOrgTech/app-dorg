@@ -12,15 +12,21 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract dOrgProjectFactory {
 
-    address public immutable logicImplementation;
-    event CloneAddress(address cloneAddress);
+    address public immutable treasuryWallet;
+    address public immutable dOrgProjectLogic;
+    address public immutable gnosisLogic;
+
+    event ProjectAddress(address _projectAddress);
+    event GnosisSafeAddress(address _gnosisSafeAddress);
 
     /**
      * @dev Initializes `dOrgProject` instance. 
      */
 
-    constructor() {
-        logicImplementation = address(new dOrgProject());
+    constructor(address _treasuryWallet, address _dOrgProjectLogic, address _gnosisLogic) {
+        treasuryWallet = _treasuryWallet;
+        dOrgProjectLogic = _dOrgProjectLogic;
+        gnosisLogic = _gnosisLogic;
     }
 
     /**
@@ -31,7 +37,13 @@ contract dOrgProjectFactory {
      * duplicates in `payees`.
      */
 
-    function createProject(string calldata _projectName, address _treasuryWallet, address _finderWallet, address _projectWallet) external{
+    function createProject(string calldata _projectName, address _finderWallet, address[] calldata _owners, uint256 _threshold) external{
+        
+        address payable gnosisSafe;
+        gnosisSafe = payable(Clones.clone(gnosisLogic));
+
+        bytes memory gnosisPayload = abi.encodeWithSignature("setup(address[],uint256,address,bytes,address,address,uint256,address)",_owners, _threshold, 0, address(0), 0, 0, 0);
+        address(gnosisSafe).call(gnosisPayload);
         
         string memory projectName; 
         projectName = _projectName;
@@ -39,20 +51,22 @@ contract dOrgProjectFactory {
         address[] memory payees = new address[](3);
         uint256[] memory shares = new uint256[](3);
 
-        payees[0] = _treasuryWallet;
+        payees[0] = treasuryWallet;
         payees[1] = _finderWallet;
-        payees[2] = _projectWallet;
+        payees[2] = gnosisSafe;
 
         shares[0] = 10;
         shares[1] = 10;
         shares[2] = 80;
         
-        address payable clone;
-        clone = payable(Clones.clone(logicImplementation));
-        dOrgProject(clone).initialize(projectName, payees, shares);
-        
-        emit CloneAddress(clone);
+        address payable project;
+        project = payable(Clones.clone(dOrgProjectLogic));
+        bytes memory projectPayload = abi.encodeWithSignature("initialize(string,address[],uint256[])",projectName,payees,shares);
+        address(project).call(projectPayload);
 
+        emit ProjectAddress(project);
+        emit GnosisSafeAddress(gnosisSafe);
+        
     }
 
 }
