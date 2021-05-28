@@ -5,7 +5,7 @@ const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 const dOrgProject = artifacts.require("dOrgProject");
 const gnosisABI = require('./GnosisSafeABI.json');
 
-contract("dOrgProjectFactory", async (accounts) => {
+contract("dOrgProjectFactory.sol and dOrgProject.sol", async (accounts) => {
   
   let factory;
   let projectClone;
@@ -15,7 +15,7 @@ contract("dOrgProjectFactory", async (accounts) => {
   let treasuryWallet = "0x15344EcDc2c4EDFCB092E284d93c20F0529FD8a6"
   let senderWallet = accounts[0];
   let finderWallet = accounts[1];
-  let wallet1 = accounts[2];
+  let wallet1 = "accounts[2]";
   let wallet2 = accounts[3];
   let maliciousWallet = accounts[5];
   let threshold = 2;
@@ -28,6 +28,10 @@ contract("dOrgProjectFactory", async (accounts) => {
     const cloneAddress = result.logs[0].args['0']
     projectClone = await dOrgProject.at(cloneAddress);
     let payees = await Promise.all([0,1,2].map(i=>projectClone.payee(i)))
+    console.log("********************************************")
+    console.log("Project Address: " + cloneAddress)
+    console.log("Gnosis Safe Address: " + payees[2])
+    console.log("********************************************")
   })
 
   it('Project cannot be initialized twice.', async () => {
@@ -58,7 +62,6 @@ contract("dOrgProjectFactory", async (accounts) => {
     let owners = await g.methods.getOwners().call({from:senderWallet})
     expect(owners).deep.to.equal(gnosisOwners)
   })
-
 
   it('Project balance should starts with 0 ETH.', async () => {
     let balance = await web3.eth.getBalance(projectClone.address);

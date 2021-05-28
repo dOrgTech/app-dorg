@@ -5,7 +5,6 @@ pragma solidity ^0.8.2;
 import "./dOrgProject.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-
 /**
 * @dev Creates an instance of `dOrgProjectFactory`. 
 */
@@ -23,9 +22,9 @@ contract dOrgProjectFactory {
      * @dev Initializes `dOrgProject` instance. 
      */
 
-    constructor(address _treasuryWallet, address _dOrgProjectLogic, address _gnosisLogic) {
+    constructor(address _treasuryWallet, address _gnosisLogic) {
         treasuryWallet = _treasuryWallet;
-        dOrgProjectLogic = _dOrgProjectLogic;
+        dOrgProjectLogic = address(new dOrgProject());
         gnosisLogic = _gnosisLogic;
     }
 
@@ -37,7 +36,7 @@ contract dOrgProjectFactory {
      * duplicates in `payees`.
      */
 
-    function createProject(string calldata _projectName, address _finderWallet, address[] calldata _owners, uint256 _threshold) external{
+    function createProject(string calldata _projectName, address _finderWallet, address[] calldata _owners, uint256 _threshold) external {
         
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
@@ -61,8 +60,7 @@ contract dOrgProjectFactory {
         
         address payable project;
         project = payable(Clones.clone(dOrgProjectLogic));
-        bytes memory projectPayload = abi.encodeWithSignature("initialize(string,address[],uint256[])",projectName,payees,shares);
-        address(project).call(projectPayload);
+        dOrgProject(project).initialize(projectName,payees,shares);
 
         emit ProjectAddress(project);
         emit GnosisSafeAddress(gnosisSafe);
