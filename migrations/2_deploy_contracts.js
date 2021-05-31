@@ -18,5 +18,5 @@ module.exports = function (deployer) {
     gnosisLogicAddress = "0xb4A7C7da1631CF60A2Cf23ABc86986f99a1A7f70" 
   }
 
-  deployer.deploy(dOrgProjectFactory, treasuryWallet, gnosisLogicAddress)
+  deployer.deploy(dOrgProjectFactory, gnosisLogicAddress)
 };
