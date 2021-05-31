@@ -43,7 +43,16 @@ contract dOrgProjectFactory {
     ) external {
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
-        GnosisSafe(gnosisSafe).setup(_owners,_threshold,address(0),"",address(0),address(0),0,payable(address(0)));
+        GnosisSafe(gnosisSafe).setup(
+            _owners,
+            _threshold,
+            address(0),
+            "",
+            address(0),
+            address(0),
+            0,
+            payable(address(0))
+        );
 
         string memory projectName;
         projectName = _projectName;

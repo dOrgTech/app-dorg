@@ -65,7 +65,7 @@ contract PaymentSplitterInitializable is Initializable, Context {
      * https://solidity.readthedocs.io/en/latest/contracts.html#fallback-function[fallback
      * functions].
      */
-    receive() external payable virtual {
+    receive() external payable {
         emit PaymentReceived(_msgSender(), msg.value);
     }
 
