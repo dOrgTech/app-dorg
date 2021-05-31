@@ -1,3 +1,0 @@
-[submodule "safe-contracts"]
-	path = safe-contracts
-	url = https://github.com/gnosis/safe-contracts.git
