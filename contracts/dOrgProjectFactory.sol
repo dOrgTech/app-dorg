@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
 import "./dOrgProject.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
@@ -9,31 +9,31 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
  * @dev Creates an instance of `dOrgProjectFactory`.
  */
 
+interface GnosisSafe {
+    function setup(
+        address[] calldata _owners,
+        uint256 threshold,
+        address to,
+        bytes calldata data,
+        address fallbackHandler,
+        address paymentToken,
+        uint256 payment,
+        address payable paymentReceiver
+    ) external;
+}
+
 contract dOrgProjectFactory {
     address public immutable treasuryWallet;
     address public immutable dOrgProjectLogic;
     address public immutable gnosisLogic;
 
-    event ProjectAddress(address _projectAddress);
-    event GnosisSafeAddress(address _gnosisSafeAddress);
-
-    /**
-     * @dev Initializes `dOrgProject` instance.
-     */
+    event ProjectCreated(address _projectAddress, address _gnosisSafeAddress);
 
     constructor(address _treasuryWallet, address _gnosisLogic) {
         treasuryWallet = _treasuryWallet;
         dOrgProjectLogic = address(new dOrgProject());
         gnosisLogic = _gnosisLogic;
     }
-
-    /**
-     * @dev
-     * 1) Creates a `dOrgProject` clone using the `Clones.sol` library. 2) Adds project to project array.
-     * Each account in `payees` is assigned the number of shares at the matching position in the `shares` array.
-     * All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
-     * duplicates in `payees`.
-     */
 
     function createProject(
         string calldata _projectName,
@@ -43,19 +43,7 @@ contract dOrgProjectFactory {
     ) external {
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
-
-        bytes memory gnosisPayload =
-            abi.encodeWithSignature(
-                "setup(address[],uint256,address,bytes,address,address,uint256,address)",
-                _owners,
-                _threshold,
-                0,
-                address(0),
-                0,
-                0,
-                0
-            );
-        address(gnosisSafe).call(gnosisPayload);
+        GnosisSafe(gnosisSafe).setup(_owners,_threshold,address(0),"",address(0),address(0),0,payable(address(0)));
 
         string memory projectName;
         projectName = _projectName;
@@ -75,7 +63,6 @@ contract dOrgProjectFactory {
         project = payable(Clones.clone(dOrgProjectLogic));
         dOrgProject(project).initialize(projectName, payees, shares);
 
-        emit ProjectAddress(project);
-        emit GnosisSafeAddress(gnosisSafe);
+        emit ProjectCreated(project, gnosisSafe);
     }
 }

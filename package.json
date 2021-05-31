@@ -29,6 +29,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
+    "hardhat": "^2.3.0",
     "prettier": "^2.3.0",
     "prettier-plugin-solidity": "*",
     "react-scripts": "4.0.3",
