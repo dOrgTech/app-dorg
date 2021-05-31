@@ -30,6 +30,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "prettier": "^2.3.0",
+    "prettier-plugin-solidity": "*",
     "react-scripts": "4.0.3",
     "typescript": "^4.1.2"
   },
