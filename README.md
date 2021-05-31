@@ -10,10 +10,18 @@
 
 ## To Test
 
+For local testing, you need to deploy GnosisSafe to your localhost. 
+
+`git clone https://github.com/gnosis/safe-contracts.git`
+`yarn hardhat --network localhost deploy`
+
+In `app-dorg` root
+`truffle migrate --network development --reset`
 `truffle test`
 
-## To Deploy to Rinkeby
+## To Deploy/Test on Rinkeby
 
 Put a private key mnemonic with rinkeby ether in `.secret`
 
 `truffle migrate --network rinkeby --reset`
+`truffle test --network rinkeby`

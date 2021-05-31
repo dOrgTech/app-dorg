@@ -5,9 +5,6 @@ module.exports = function (deployer) {
   let env = process.env.NODE_ENV || "development";
 
   console.log("Environment: " + env);
-
-  // Mainnet treasury wallet.git
-  let treasuryWallet = "0x15344EcDc2c4EDFCB092E284d93c20F0529FD8a6"
   
   let gnosisLogicAddress;
 
