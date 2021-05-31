@@ -3,7 +3,7 @@
     "eslint:recommended",
     "plugin:react/recommended"
   ],
-  "plugins": ["prettier"],
+  "plugins": ["prettier","prettier-plugin-solidity"],
   "rules": {
     "prettier/prettier": "error",
     "react/prop-types": 0

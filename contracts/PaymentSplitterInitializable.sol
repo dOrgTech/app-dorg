@@ -40,8 +40,16 @@ contract PaymentSplitterInitializable is Initializable, Context {
      * duplicates in `payees`.
      */
 
-    function initialize(address[] memory payees, uint256[] memory shares_) initializer virtual public payable {
-        require(payees.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
+    function initialize(address[] memory payees, uint256[] memory shares_)
+        public
+        payable
+        virtual
+        initializer
+    {
+        require(
+            payees.length == shares_.length,
+            "PaymentSplitter: payees and shares length mismatch"
+        );
         require(payees.length > 0, "PaymentSplitter: no payees");
         for (uint256 i = 0; i < payees.length; i++) {
             _addPayee(payees[i], shares_[i]);
@@ -57,7 +65,7 @@ contract PaymentSplitterInitializable is Initializable, Context {
      * https://solidity.readthedocs.io/en/latest/contracts.html#fallback-function[fallback
      * functions].
      */
-    receive () external payable virtual {
+    receive() external payable {
         emit PaymentReceived(_msgSender(), msg.value);
     }
 
@@ -104,7 +112,10 @@ contract PaymentSplitterInitializable is Initializable, Context {
         require(_shares[account] > 0, "PaymentSplitter: account has no shares");
 
         uint256 totalReceived = address(this).balance + _totalReleased;
-        uint256 payment = totalReceived * _shares[account] / _totalShares - _released[account];
+        uint256 payment =
+            (totalReceived * _shares[account]) /
+                _totalShares -
+                _released[account];
 
         require(payment != 0, "PaymentSplitter: account is not due payment");
 
@@ -121,9 +132,15 @@ contract PaymentSplitterInitializable is Initializable, Context {
      * @param shares_ The number of shares owned by the payee.
      */
     function _addPayee(address account, uint256 shares_) private {
-        require(account != address(0), "PaymentSplitter: account is the zero address");
+        require(
+            account != address(0),
+            "PaymentSplitter: account is the zero address"
+        );
         require(shares_ > 0, "PaymentSplitter: shares are 0");
-        require(_shares[account] == 0, "PaymentSplitter: account already has shares");
+        require(
+            _shares[account] == 0,
+            "PaymentSplitter: account already has shares"
+        );
 
         _payees.push(account);
         _shares[account] = shares_;
