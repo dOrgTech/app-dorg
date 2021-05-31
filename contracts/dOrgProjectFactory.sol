@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 interface GnosisSafe {
     function setup(
-        address[] calldata _owners,
+        address[] calldata owners,
         uint256 threshold,
         address to,
         bytes calldata data,
@@ -27,32 +27,32 @@ contract dOrgProjectFactory {
     address public immutable dOrgProjectLogic;
     address public immutable gnosisLogic;
 
-    event ProjectCreated(address _projectAddress, address _gnosisSafeAddress);
+    event ProjectCreated(address projectAddress, address gnosisSafeAddress);
 
-    constructor(address _treasuryWallet, address _gnosisLogic) {
-        treasuryWallet = _treasuryWallet;
+    constructor(address treasuryWallet, address gnosisLogic) {
+        treasuryWallet = treasuryWallet;
         dOrgProjectLogic = address(new dOrgProject());
-        gnosisLogic = _gnosisLogic;
+        gnosisLogic = gnosisLogic;
     }
 
     function createProject(
-        string calldata _projectName,
-        address _finderWallet,
-        address[] calldata _owners,
-        uint256 _threshold
+        string calldata projectName,
+        address finderWallet,
+        address[] calldata owners,
+        uint256 threshold
     ) external {
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
-        GnosisSafe(gnosisSafe).setup(_owners,_threshold,address(0),"",address(0),address(0),0,payable(address(0)));
+        GnosisSafe(gnosisSafe).setup(owners,threshold,address(0),"",address(0),address(0),0,payable(address(0)));
 
         string memory projectName;
-        projectName = _projectName;
+        projectName = projectName;
 
         address[] memory payees = new address[](3);
         uint256[] memory shares = new uint256[](3);
 
         payees[0] = treasuryWallet;
-        payees[1] = _finderWallet;
+        payees[1] = finderWallet;
         payees[2] = gnosisSafe;
 
         shares[0] = 10;
