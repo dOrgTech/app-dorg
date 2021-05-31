@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.2;
 
 import "./dOrgProject.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
@@ -22,6 +22,7 @@ interface GnosisSafe {
     ) external;
 }
 
+
 contract dOrgProjectFactory {
     address public immutable treasuryWallet;
     address public immutable dOrgProjectLogic;
@@ -29,10 +30,14 @@ contract dOrgProjectFactory {
 
     event ProjectCreated(address projectAddress, address gnosisSafeAddress);
 
-    constructor(address gnosisLogic_) {
+    /**
+     * @dev Initializes `dOrgProject` instance.
+     */
+
+    constructor(address _gnosisLogic) {
         treasuryWallet = address(0x15344EcDc2c4EDFCB092E284d93c20F0529FD8a6);
         dOrgProjectLogic = address(new dOrgProject());
-        gnosisLogic = gnosisLogic_;
+        gnosisLogic = _gnosisLogic;
     }
 
     function createProject(
@@ -41,6 +46,7 @@ contract dOrgProjectFactory {
         address[] calldata owners,
         uint256 threshold
     ) external {
+
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
 
@@ -70,6 +76,6 @@ contract dOrgProjectFactory {
         project = payable(Clones.clone(dOrgProjectLogic));
         dOrgProject(project).initialize(projectName, payees, shares);
 
-        emit ProjectCreated(project, gnosisSafe);
+        emit ProjectCreated(project,gnosisSafe);
     }
 }
