@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Avatar,
-  Grid,
-} from "@material-ui/core";
+import { AppBar, IconButton, Toolbar } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { DRAWER_WIDTH } from "./MainLayout";
 import MenuIcon from "@material-ui/icons/Menu";
-import AvatarImg from "../assets/images/avatar.png";
 import SearchIcon from "@material-ui/icons/Search";
 import { COLORS } from "../utils/colors";
+import { AvatarCard } from "../components/avatar/AvatarCard";
+import AvatarImg from "../assets/images/avatar.png";
 
 interface MainAppBarProps {
   onToggle: () => void;
@@ -39,10 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    profileContainer: {
-      width: "auto",
-      marginLeft: 8,
-    },
     toolbar: {
       minHeight: 90,
     },
@@ -68,19 +58,11 @@ export const MainAppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
         </IconButton>
         <SearchIcon className={classes.searchIcon} />
         <div className={classes.grow} />
-        <Avatar src={AvatarImg} alt="avatar" />
-        <Grid container direction="column" className={classes.profileContainer}>
-          <Grid item>
-            <Typography variant="body1" color="textSecondary" noWrap>
-              Colin Spence
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" color="textPrimary" noWrap>
-              0x7301cf-0eb0aa6
-            </Typography>
-          </Grid>
-        </Grid>
+        <AvatarCard
+          name="Colin Spence"
+          address="0x7301cf-0eb0aa6"
+          image={AvatarImg}
+        />
       </Toolbar>
     </AppBar>
   );

@@ -3,8 +3,14 @@ import { Avatar, Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DorgIcon from "../../assets/images/dorg-icon.svg";
 import { TimeText } from "../text/TimeText";
-import AvatarImg from "../../assets/images/avatar.png";
 import { AvatarGroup } from "../avatar/AvatarGroup";
+import { COLORS } from "../../utils/colors";
+import { VotingProcess } from "../voting/VotingProcess";
+import { Proposal } from "../../store/reducers/proposals/model";
+
+interface ProposalCardProps {
+  proposal: Proposal;
+}
 
 const useStyles = makeStyles({
   root: {
@@ -32,10 +38,22 @@ const useStyles = makeStyles({
   splitContainer: {
     marginTop: 16,
   },
+  splitItem: {
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  greyContainer: {
+    borderRadius: 8,
+    backgroundColor: COLORS.blueGray["50"],
+  },
 });
 
-export const ProposalCard: React.FC = () => {
+export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
   const classes = useStyles();
+
+  const { againstVotes, forVotes, totalVotes, title, voters } = proposal;
 
   return (
     <Card className={classes.root}>
@@ -44,34 +62,43 @@ export const ProposalCard: React.FC = () => {
           <Grid item xs={1} alignContent="center">
             <img src={DorgIcon} alt="Dorg Icon" />
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             <Typography
               variant="h4"
               className={classes.title}
               color="textSecondary"
             >
-              Quality Engagement
+              {title}
             </Typography>
           </Grid>
         </Grid>
 
         <Grid container direction="row" className={classes.splitContainer}>
-          <Grid item xs={6}>
+          <Grid
+            item
+            xs={6}
+            alignContent="center"
+            className={[classes.splitItem, classes.greyContainer].join(" ")}
+          >
             <Typography variant="subtitle2">Expires in:</Typography>
-            <TimeText time="02:11:03:05" />
+            {/* TODO: calculate and format time left for expire */}
+            <TimeText time="00:00:00:00" />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} className={classes.splitItem}>
             <Typography variant="subtitle2">Votes:</Typography>
             <AvatarGroup>
-              <Avatar src={AvatarImg} alt="avatar" />
-              <Avatar src={AvatarImg} alt="avatar" />
-              <Avatar src={AvatarImg} alt="avatar" />
-              <Avatar src={AvatarImg} alt="avatar" />
-              <Avatar src={AvatarImg} alt="avatar" />
-              <Avatar src={AvatarImg} alt="avatar" />
+              {voters.map((voter, index) => (
+                <Avatar src={voter} key={index} alt="avatar" />
+              ))}
             </AvatarGroup>
           </Grid>
         </Grid>
+
+        <VotingProcess
+          totalVotes={totalVotes}
+          againstVotes={againstVotes}
+          forVotes={forVotes}
+        />
       </CardContent>
     </Card>
   );

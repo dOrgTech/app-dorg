@@ -9,10 +9,10 @@ import { COLORS } from "./utils/colors";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#1AAF71",
+      main: COLORS.green["600"],
     },
     text: {
-      primary: "#1AAF71",
+      primary: COLORS.green["600"],
       secondary: "#1E293B",
     },
     background: {
