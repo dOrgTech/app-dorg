@@ -8,7 +8,7 @@ interface TimeTextProps {
 
 const StyledTypography = styled(Typography)({
   color: COLORS.blueGray["700"],
-  fontSize: 12,
+  fontSize: 14,
   fontWeight: 600,
   fontFamily: "IBM Plex Mono",
 });
