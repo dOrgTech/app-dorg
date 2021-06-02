@@ -4,6 +4,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { COLORS } from "../../utils/colors";
+import { Label } from "../inputs/Label";
 
 const useStyles = makeStyles({
   tag: {
@@ -38,7 +39,6 @@ const useStyles = makeStyles({
   },
   inputWrapper: {
     width: "100%",
-    minHeight: 56,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: COLORS.blueGray["300"],
@@ -113,13 +113,6 @@ const useStyles = makeStyles({
       },
     },
   },
-  label: {
-    color: COLORS.blueGray["500"],
-    fontWeight: 700,
-    fontSize: 12,
-    textTransform: "capitalize",
-    marginBottom: 4,
-  },
 });
 
 const Tag: React.FC<{ label: string; onDelete?: () => void }> = ({
@@ -147,7 +140,7 @@ export const MultiValueInput: React.FC<MultiValueInputProps> = ({
   label,
   options = [],
   values,
-  onChange = () => {},
+  onChange,
 }) => {
   const {
     getRootProps,
@@ -167,14 +160,14 @@ export const MultiValueInput: React.FC<MultiValueInputProps> = ({
   });
 
   useEffect(() => {
-    onChange(value);
+    if (onChange) onChange(value);
   }, [value]);
 
   const classes = useStyles();
 
   return (
     <div>
-      <label className={classes.label}>{label} : </label>
+      <Label text={`${label}:`} style={{ textTransform: "capitalize" }} />
       <div {...getRootProps()}>
         <div
           ref={setAnchorEl}

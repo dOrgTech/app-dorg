@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { ActiveButton } from "../../components/button/ActiveButton";
@@ -7,6 +7,7 @@ import { ProposalCard } from "../../components/card/ProposalCard";
 import { Proposal } from "../../store/reducers/proposals/model";
 import AvatarImg from "../../assets/images/avatar.png";
 import { ProjectsTable } from "./ProjectsTable";
+import { NewProjectModal } from "./NewProjectModal";
 
 const proposals: Proposal[] = [
   {
@@ -52,13 +53,21 @@ const useStyles = makeStyles(() =>
 
 export const ProjectsView: React.FC = () => {
   const classes = useStyles();
+  const [newProjectModalOpen, setNewProjectModalOpen] = useState(false);
+
+  const handleOpenModal = () => setNewProjectModalOpen(true);
+  const handleCloseModal = () => setNewProjectModalOpen(false);
 
   return (
     <div>
       <Grid container>
         <Typography variant="h1">Projects</Typography>
         <div className={classes.grow} />
-        <ActiveButton startIcon={<AddCircleOutlineIcon />}>
+        <ActiveButton
+          size="large"
+          onClick={handleOpenModal}
+          startIcon={<AddCircleOutlineIcon />}
+        >
           New Project
         </ActiveButton>
       </Grid>
@@ -96,6 +105,11 @@ export const ProjectsView: React.FC = () => {
       </Typography>
 
       <ProjectsTable />
+
+      <NewProjectModal
+        open={newProjectModalOpen}
+        handleClose={handleCloseModal}
+      />
     </div>
   );
 };

@@ -7,11 +7,6 @@ const StyledButton = styled(Button)({
   textTransform: "none",
   color: "#FFFFFF",
   fontWeight: "bold",
-  fontSize: 12,
-  paddingTop: 8,
-  paddingBottom: 8,
-  paddingLeft: 16,
-  paddingRight: 16,
 });
 
 export const ActiveButton: React.FC<ButtonProps> = (props) => {
