@@ -31,6 +31,11 @@ const theme = createMuiTheme({
       fontSize: 24,
       fontWeight: 700,
     },
+    h3: {
+      color: COLORS.blueGray["700"],
+      fontSize: 18,
+      fontWeight: 700,
+    },
     h4: {
       color: COLORS.blueGray["700"],
       fontSize: 16,

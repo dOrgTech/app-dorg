@@ -14,6 +14,7 @@ import { AvatarGroup } from "../../components/avatar/AvatarGroup";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { COLORS } from "../../utils/colors";
 import { ProjectStatusChip } from "./ProjectStatusChip";
+import { ProjectsTableFilters } from "./ProjectsTableFilters";
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -70,54 +71,60 @@ export const ProjectsTable = () => {
   const classes = useStyles();
 
   return (
-    <TableContainer component={Paper} className={classes.tableContainer}>
-      <Table className={classes.table} aria-label="simple table">
-        <colgroup>
-          <col width="30%" />
-          <col width="30%" />
-          <col width="20%" />
-          <col width="20%" />
-        </colgroup>
-        <TableHead className={classes.tableHeader}>
-          <TableRow>
-            <TableCell className={classes.tableHeaderCell}>Project</TableCell>
-            <TableCell className={classes.tableHeaderCell}>
-              Total Invoiced
-            </TableCell>
-            <TableCell className={classes.tableHeaderCell}>Members</TableCell>
-            <TableCell className={classes.tableHeaderCell}>Status</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell>
-                <Box display="flex" flexDirection="row" alignItems="center">
-                  <img className={classes.logo} src={row.logo} alt="logo" />
-                  <Typography variant="h4" className={classes.projectTitle}>
-                    {row.name}
-                  </Typography>
-                </Box>
+    <>
+      <ProjectsTableFilters />
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table className={classes.table} aria-label="simple table">
+          <colgroup>
+            <col width="30%" />
+            <col width="30%" />
+            <col width="20%" />
+            <col width="20%" />
+          </colgroup>
+          <TableHead className={classes.tableHeader}>
+            <TableRow>
+              <TableCell className={classes.tableHeaderCell}>Project</TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                Total Invoiced
               </TableCell>
-              <TableCell>
-                <Typography variant="h4" className={classes.totalInvoicedTitle}>
-                  {row.totalInvoiced} {row.totalUnit}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <AvatarGroup>
-                  {row.members.map((member, index) => (
-                    <Avatar src={member} key={index} alt="avatar" />
-                  ))}
-                </AvatarGroup>
-              </TableCell>
-              <TableCell>
-                <ProjectStatusChip status={row.status} />
-              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>Members</TableCell>
+              <TableCell className={classes.tableHeaderCell}>Status</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.name}>
+                <TableCell>
+                  <Box display="flex" flexDirection="row" alignItems="center">
+                    <img className={classes.logo} src={row.logo} alt="logo" />
+                    <Typography variant="h4" className={classes.projectTitle}>
+                      {row.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Typography
+                    variant="h4"
+                    className={classes.totalInvoicedTitle}
+                  >
+                    {row.totalInvoiced} {row.totalUnit}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <AvatarGroup>
+                    {row.members.map((member, index) => (
+                      <Avatar src={member} key={index} alt="avatar" />
+                    ))}
+                  </AvatarGroup>
+                </TableCell>
+                <TableCell>
+                  <ProjectStatusChip status={row.status} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
