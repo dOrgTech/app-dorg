@@ -1,5 +1,4 @@
 import React from "react";
-import { CreateProjectForm } from "../../components/CreateProjectForm";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { CustomModal } from "../../components/CustomModal";
 import { Box, Grid, IconButton, Typography } from "@material-ui/core";
