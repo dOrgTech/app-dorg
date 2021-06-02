@@ -48,7 +48,7 @@
     "test": "react-scripts test",
     "prettier": "prettier --write 'contracts/**/*.sol'",
     "contracts:compile": "truffle compile && yarn typechain",
-    "typechain":  "typechain --target ethers-v5 --out-dir src/contracts ./build/contracts/*.json",
+    "typechain":  "typechain --target ethers-v5 --out-dir src/contracts/models ./build/contracts/*.json",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint"
   },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { CustomModal } from "../../components/CustomModal";
 import { Box, Grid, IconButton, Typography } from "@material-ui/core";
@@ -11,6 +11,9 @@ import { ActiveButton } from "../../components/button/ActiveButton";
 import ChevronRightTwoToneIcon from "@material-ui/icons/ChevronRightTwoTone";
 import { BasicButton } from "../../components/button/BasicButton";
 import CloseIcon from "@material-ui/icons/Close";
+import { useRootDispatch } from "../../store";
+import { createProject } from "../../store/reducers/projects/projectsSlice";
+import { Project, ProjectStatus } from "../../store/reducers/projects/model";
 
 interface NewProjectModalProps {
   open: boolean;
@@ -35,6 +38,21 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   handleClose,
 }) => {
   const classes = useStyles();
+  const dispatch = useRootDispatch();
+
+  const [projectName, setProjectName] = useState("");
+  const [sourcingWallet, setSourcingWallet] = useState("");
+  const [builders, setBuilders] = useState<string[]>([]);
+
+  const handleSubmit = () => {
+    const project: Project = {
+      name: projectName,
+      members: builders,
+      status: ProjectStatus.PENDING,
+    };
+    dispatch(createProject({ project, sourcingWallet }));
+  };
+
   return (
     <CustomModal className={classes.modal} open={open} onClose={handleClose}>
       <Box
@@ -45,8 +63,8 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
       >
         <Typography variant="h2">Create a New Project</Typography>
         <Box flexGrow={1} />
-        <IconButton>
-          <CloseIcon onClick={handleClose} />
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
         </IconButton>
       </Box>
       <Divider />
@@ -56,13 +74,24 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
           <Input required fullWidth label="Client Name" value="Badger" />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Input required fullWidth label="Client Name" value="Badger" />
+          <Input
+            required
+            fullWidth
+            label="Client Email"
+            value="admin@badger.io"
+          />
         </Grid>
       </Grid>
       <Box marginTop={4} />
       <Typography variant="h3">Project Details</Typography>
       <Box marginTop={2} />
-      <Input required fullWidth label="Client Name" value="Badger" />
+      <Input
+        required
+        fullWidth
+        label="Project Name"
+        value={projectName}
+        onChange={(evt) => setProjectName(evt.target.value)}
+      />
       <Box marginTop={1} />
       <Alert severity="success">
         <b>badger-support.dorg.tech</b> is available
@@ -93,23 +122,28 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
       <Box marginTop={2} />
       <Input
         fullWidth
-        label="Client Name: "
+        label="Sourcing Address: "
         description="(If more than one sourcing member, we recommend creating a multisig first)"
-        value="Badger"
+        value={sourcingWallet}
+        onChange={(evt) => setSourcingWallet(evt.target.value)}
       />
       <Box marginTop={2} />
       <MultiValueInput
         label="Builders"
-        values={["Cesar Brazon", "Ori Shimony"]}
+        values={builders}
+        onChange={setBuilders}
       />
       <Box marginTop={2} />
-      {/*<CreateProjectForm />*/}
       <Box display="flex" flexDirection="row" justifyContent="flex-end">
         <BasicButton size="small" onClick={handleClose}>
           Cancel
         </BasicButton>
         <Box marginLeft={2} />
-        <ActiveButton size="small" endIcon={<ChevronRightTwoToneIcon />}>
+        <ActiveButton
+          size="small"
+          endIcon={<ChevronRightTwoToneIcon />}
+          onClick={handleSubmit}
+        >
           Create Project
         </ActiveButton>
       </Box>

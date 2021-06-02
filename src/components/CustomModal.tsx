@@ -26,7 +26,6 @@ export const CustomModal: React.FC<CustomModalProps> = ({
   ...props
 }) => {
   const classes = useStyles();
-  console.log("classes", [classes.modalContainer, className].join(" "));
   return (
     <Modal {...props}>
       <div className={[className, classes.modalContainer].join(" ")}>
