@@ -1,18 +1,24 @@
 import React from "react";
-import { styled, Typography } from "@material-ui/core";
-import { COLORS } from "../../utils/colors";
+import { makeStyles, Typography } from "@material-ui/core";
+import { createStyles } from "@material-ui/core/styles";
 
 interface TimeTextProps {
   time: string;
 }
 
-const StyledTypography = styled(Typography)({
-  color: COLORS.blueGray["700"],
-  fontSize: 14,
-  fontWeight: 600,
-  fontFamily: "IBM Plex Mono",
-});
+const useStyles = makeStyles(() =>
+  createStyles({
+    text: {
+      display: "flex",
+      flexDirection: "row",
+      padding: 16,
+      borderRadius: 4,
+      alignItems: "center",
+    },
+  })
+);
 
 export const TimeText: React.FC<TimeTextProps> = ({ time }) => {
-  return <StyledTypography>{time}</StyledTypography>;
+  const classes = useStyles();
+  return <Typography className={classes.text}>{time}</Typography>;
 };
