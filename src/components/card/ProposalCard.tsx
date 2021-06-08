@@ -59,7 +59,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
     <Card className={classes.root}>
       <CardContent className={classes.content}>
         <Grid container direction="row" alignContent="center">
-          <Grid item xs={1} alignContent="center">
+          <Grid item xs={1}>
             <img src={DorgIcon} alt="Dorg Icon" />
           </Grid>
           <Grid item xs={11}>
@@ -73,11 +73,15 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
           </Grid>
         </Grid>
 
-        <Grid container direction="row" className={classes.splitContainer}>
+        <Grid
+          container
+          direction="row"
+          className={classes.splitContainer}
+          alignContent="center"
+        >
           <Grid
             item
             xs={6}
-            alignContent="center"
             className={[classes.splitItem, classes.greyContainer].join(" ")}
           >
             <Typography variant="subtitle2">Expires in:</Typography>

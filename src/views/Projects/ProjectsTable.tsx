@@ -58,7 +58,7 @@ const rows: Project[] = [
     status: ProjectStatus.ACTIVE,
   },
   {
-    name: "Badger DAO",
+    name: "Badger DAO 2",
     logo: BadgerLogo,
     totalInvoiced: 55302,
     totalUnit: "xDAI",
