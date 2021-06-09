@@ -18,5 +18,3 @@ export const dOrgProjectFactory = DOrgProjectFactory__factory.connect(
 
 export const getDOrgProjectContract = (contractAddress: string) =>
   DOrgProject__factory.connect(contractAddress, signer);
-
-console.log("dOrgProjectFactory", dOrgProjectFactory);
