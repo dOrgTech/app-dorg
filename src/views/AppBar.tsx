@@ -1,12 +1,15 @@
 import React from "react";
-import { AppBar, IconButton, Toolbar } from "@material-ui/core";
+import { AppBar as MUIAppBar, IconButton, Toolbar } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { DRAWER_WIDTH } from "./MainLayout";
+import { DRAWER_WIDTH } from "./Layout";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import { COLORS } from "../utils/colors";
 import { AvatarCard } from "../components/avatar/AvatarCard";
 import AvatarImg from "../assets/images/avatar.png";
+import { useRootSelector } from "../store";
+import { getUser } from "../store/reducers/user/selectors";
+import { truncate } from "../helpers/strings";
 
 interface MainAppBarProps {
   onToggle: () => void;
@@ -42,10 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const MainAppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
+export const AppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
   const classes = useStyles();
+  const user = useRootSelector(getUser);
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <MUIAppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
         <IconButton
           color="inherit"
@@ -60,10 +64,10 @@ export const MainAppBar: React.FC<MainAppBarProps> = ({ onToggle }) => {
         <div className={classes.grow} />
         <AvatarCard
           name="Colin Spence"
-          address="0x7301cf-0eb0aa6"
+          address={user.ens || truncate(user.address, 6)}
           image={AvatarImg}
         />
       </Toolbar>
-    </AppBar>
+    </MUIAppBar>
   );
 };

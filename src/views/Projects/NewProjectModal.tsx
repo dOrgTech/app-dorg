@@ -14,6 +14,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { useRootDispatch } from "../../store";
 import { createProject } from "../../store/reducers/projects/projectsSlice";
 import { Project, ProjectStatus } from "../../store/reducers/projects/model";
+import { BigNumber } from "ethers";
 
 interface NewProjectModalProps {
   open: boolean;
@@ -48,9 +49,11 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
     const project: Project = {
       name: projectName,
       members: builders,
+      threshold: BigNumber.from(1),
+      sourcingWallet,
       status: ProjectStatus.PENDING,
     };
-    dispatch(createProject({ project, sourcingWallet }));
+    dispatch(createProject(project));
   };
 
   return (

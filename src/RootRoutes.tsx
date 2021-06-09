@@ -1,13 +1,13 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { WalletConnection } from "./views/WalletConnection/WalletConnection";
-import { MainLayout } from "./views/MainLayout";
+import { Layout } from "./views/Layout";
 
 export const RootRoutes = () => {
   return (
     <>
       <Route path="/auth" component={WalletConnection} />
-      <Route path="/" component={MainLayout} />
+      <Route path="/" component={Layout} />
     </>
   );
 };

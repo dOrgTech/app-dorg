@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core/styles";
 import ProjectIcon from "../../assets/images/project.svg";
 import DorgLogoIcon from "../../assets/images/dorg-logo.svg";
-import { DRAWER_WIDTH } from "../MainLayout";
+import { DRAWER_WIDTH } from "../Layout";
 import { MenuItem } from "../../components/list/MenuItem";
 import { DaoInfoCard } from "./DaoInfoCard";
 

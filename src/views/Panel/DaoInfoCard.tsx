@@ -4,6 +4,9 @@ import DorgLogo from "../../assets/images/dorg-icon.svg";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { COLORS } from "../../utils/colors";
 import { AvatarCard } from "../../components/avatar/AvatarCard";
+import { useWallet } from "../../hooks/useWallet";
+
+const TREASURY = process.env.REACT_APP_RINKEBY_DORG_TREASURY as string;
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -40,7 +43,7 @@ const useStyles = makeStyles((theme) =>
 
 export const DaoInfoCard: React.FC = () => {
   const classes = useStyles();
-
+  const { balance } = useWallet(TREASURY);
   return (
     <Box className={classes.root}>
       <AvatarCard name="dOrg" address="0x7301cf-0eb0aa6" image={DorgLogo} />
@@ -50,7 +53,7 @@ export const DaoInfoCard: React.FC = () => {
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle2">Cash</Typography>
-          <Typography variant="h4">$63,793</Typography>
+          <Typography variant="h4">{balance} ETH</Typography>
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle2">Debt</Typography>
