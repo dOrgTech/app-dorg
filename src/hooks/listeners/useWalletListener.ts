@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { getProvider, onAccountsChange } from "../../services/ethereum";
+import {
+  getProvider,
+  onAccountsChange,
+  requestAccounts,
+} from "../../services/ethereum";
 import { useRootDispatch, useRootSelector } from "../../store";
 import { getUser } from "../../store/reducers/user/selectors";
 import { setUserAddress } from "../../store/reducers/user/userSlice";
@@ -10,10 +14,12 @@ export const useWalletListener = () => {
 
   useEffect(() => {
     const listener = (accounts: string[]) => {
-      dispatch(setUserAddress(accounts[0]));
+      if (accounts.length) dispatch(setUserAddress(accounts[0]));
     };
     onAccountsChange(listener);
     getProvider().listAccounts().then(listener);
+
+    requestAccounts();
   }, []);
 
   useEffect(() => {
