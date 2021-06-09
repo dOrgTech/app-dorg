@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Project } from "./model";
-import { BigNumber } from "ethers";
-import { dOrgProjectFactory } from "../../../contracts";
+import { deployProjectContract } from "../../../services/projects";
+import { getSigner } from "../../../services/ethereum";
 
 interface ProjectsReducerState {
   projects: Project[];
@@ -13,35 +13,12 @@ const projectsReducerInitialState: ProjectsReducerState = {
 
 export const createProject = createAsyncThunk(
   "projects/create",
-  // Declare the type your function argument here:
-  async ({
-    project,
-    sourcingWallet,
-  }: {
-    project: Project;
-    sourcingWallet: string;
-  }) => {
-    const threshold = BigNumber.from(1);
-
-    try {
-      const transaction = await dOrgProjectFactory.createProject(
-        project.name,
-        sourcingWallet,
-        project.members,
-        threshold,
-        { gasLimit: 1000000 }
-      );
-
-      console.log({ transaction });
-
-      const receipt = await transaction.wait();
-      console.log("Got the transaction receipt: ", receipt);
-
-      return project;
-    } catch (error) {
-      console.warn("Create Project Error", error);
-      throw error;
-    }
+  async (project: Project) => {
+    const signer = getSigner();
+    const transaction = await deployProjectContract(signer, project);
+    const receipt = await transaction.wait();
+    console.log("transaction receipt: ", receipt);
+    return project;
   }
 );
 
