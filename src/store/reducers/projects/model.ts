@@ -4,10 +4,10 @@ export enum ProjectStatus {
 }
 
 export interface Project {
-  logo: string;
   name: string;
-  totalInvoiced: number;
-  totalUnit: string;
   members: string[];
   status: ProjectStatus;
+  logo?: string;
+  totalInvoiced?: number;
+  totalUnit?: string;
 }

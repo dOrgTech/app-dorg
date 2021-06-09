@@ -1,11 +1,13 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["prettier","prettier-plugin-solidity"],
+  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0
   }
 }

@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { MainAppBar } from "./MainAppBar";
 import { NavPanel } from "./Panel/NavPanel";
 import { ViewRoutes } from "./ViewRoutes";
+import { useContractListener } from "../hooks/useContractListener";
 
 export const DRAWER_WIDTH = 240;
 
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export function MainLayout() {
   const classes = useStyles();
+  useContractListener();
   const [panelOpen, setPanelOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
