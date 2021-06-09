@@ -46,7 +46,7 @@
     "start": "yarn contracts:compile && react-scripts start",
     "build": "yarn contracts:compile && react-scripts build",
     "test": "react-scripts test",
-    "prettier": "prettier --write 'contracts/**/*.sol'",
+    "prettier": "prettier --write 'contracts/**/*.sol' && prettier --write src/**/*.ts",
     "contracts:compile": "truffle compile && yarn typechain",
     "typechain": "typechain --target ethers-v5 --out-dir src/contracts/models ./build/contracts/*.json",
     "eject": "react-scripts eject",
