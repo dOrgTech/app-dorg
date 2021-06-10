@@ -22,11 +22,19 @@ interface GnosisSafe {
     ) external;
 }
 
-
 contract dOrgProjectFactory {
     address public immutable treasuryWallet;
     address public immutable dOrgProjectLogic;
     address public immutable gnosisLogic;
+
+    Project[] projects;
+    uint256 projIndex = 0;
+
+    struct Project {
+        uint256 id;
+        string uri;
+        address deployAddress;
+    }
 
     event ProjectCreated(address projectAddress, address gnosisSafeAddress);
 
@@ -40,13 +48,32 @@ contract dOrgProjectFactory {
         gnosisLogic = _gnosisLogic;
     }
 
+    function predictProjectDeploymentAddress(bytes32 salt) public view returns(address) {
+        address dA = Clones.predictDeterministicAddress(dOrgProjectLogic,salt);
+        return dA;
+    }
+
+    function newProject(string memory ipfs_path, bytes32 salt) public {
+        address dA = Clones.predictDeterministicAddress(dOrgProjectLogic,salt);
+        projects.push(Project(projIndex,ipfs_path,dA));
+        projIndex += 1;
+    }
+
+    function getProject(uint256 i) public view returns(string memory) {
+        return projects[i];
+    }
+
+    function getProjects() public view returns(Project[] memory) {
+        return projects;
+    }
+
+
     function createProject(
         string calldata projectName,
         address finderWallet,
         address[] calldata owners,
         uint256 threshold
     ) external {
-
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
 
