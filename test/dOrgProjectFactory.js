@@ -3,7 +3,7 @@
 const truffleAssert = require('truffle-assertions');
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 const dOrgProject = artifacts.require("dOrgProject");
-const gnosisABI = require('./GnosisSafeABI.json');
+const gnosisABI = require('../safe-contracts/deployments/localhost/GnosisSafe.json')['abi'];
 
 contract("dOrgProjectFactory.sol and dOrgProject.sol", async (accounts) => {
   
