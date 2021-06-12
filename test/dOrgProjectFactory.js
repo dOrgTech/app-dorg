@@ -22,7 +22,7 @@ contract("dOrgProjectFactory.sol and dOrgProject.sol", async (accounts) => {
 
   let gnosisOwners = [wallet1, wallet2];
 
-  beforeAll(async () => {
+  before(async () => {
     factory = await dOrgProjectFactory.deployed()
     result = await factory.createProject(projectName, finderWallet, gnosisOwners, threshold)
     const cloneAddress = result.logs[0].args['0']
