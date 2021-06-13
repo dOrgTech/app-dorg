@@ -13,11 +13,12 @@ import "./PaymentSplitterInitializable.sol";
  */
 
 contract dOrgProject is Initializable, PaymentSplitterInitializable {
-
-    function initialize(
-        address[] memory _payees,
-        uint256[] memory _shares
-    ) override public payable initializer {
+    function initialize(address[] memory _payees, uint256[] memory _shares)
+        public
+        payable
+        override
+        initializer
+    {
         PaymentSplitterInitializable.initialize(_payees, _shares);
     }
 }

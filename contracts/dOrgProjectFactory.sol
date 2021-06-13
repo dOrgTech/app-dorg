@@ -29,9 +29,9 @@ contract dOrgProjectFactory {
 
     struct Project {
         string metadataURI;
-        uint forVotes;
-        uint againstVotes;
-        uint createdAt;
+        uint256 forVotes;
+        uint256 againstVotes;
+        uint256 createdAt;
         address deployAddress;
     }
 
@@ -40,7 +40,7 @@ contract dOrgProjectFactory {
     mapping(uint256 => mapping(address => bool)) public Votes;
     mapping(uint256 => address[]) public Owners;
     mapping(uint256 => address) public Finders;
-    mapping(uint256 => uint) public Thresholds;
+    mapping(uint256 => uint256) public Thresholds;
 
     event ProjectCreated(address projectAddress, address gnosisSafeAddress);
 
@@ -50,24 +50,39 @@ contract dOrgProjectFactory {
         gnosisLogic = _gnosisLogic;
     }
 
-    function newProject(string memory metadataURI, address[] memory owners, address finder, uint threshold) public {
+    function newProject(
+        string memory metadataURI,
+        address[] memory owners,
+        address finder,
+        uint256 threshold
+    ) public {
         Owners[projectIndex] = owners;
         Finders[projectIndex] = finder;
         Thresholds[projectIndex] = threshold;
-        Projects[projectIndex] = Project(metadataURI,0,0,block.timestamp,address(0));
+        Projects[projectIndex] = Project(
+            metadataURI,
+            0,
+            0,
+            block.timestamp,
+            address(0)
+        );
         projectIndex++;
     }
 
-    function getProject(uint256 i) public view returns(Project memory) {
+    function getProject(uint256 i) public view returns (Project memory) {
         return Projects[i];
     }
 
-    function vote(uint256 i, bool approval) public {
-        if(!Votes[i][msg.sender]){
+    function vote(uint256 i, bool approval) public returns (Project memory) {
+        require(
+            block.timestamp < Projects[i].createdAt + 604800,
+            "Voting period has closed."
+        );
+        if (!Votes[i][msg.sender]) {
             if (approval == true) {
                 Projects[i].forVotes += 1;
             }
-            if (approval == false){
+            if (approval == false) {
                 Projects[i].againstVotes += 1;
             }
         }
@@ -75,15 +90,22 @@ contract dOrgProjectFactory {
     }
 
     function deployProject(uint256 i) public {
-        require(Projects[i].forVotes > Projects[i].againstVotes);
-        require(block.timestamp > Projects[i].createdAt);
-        createProject(Finders[i],Owners[i],Thresholds[i]);
+        require(
+            Projects[i].forVotes > Projects[i].againstVotes,
+            "Project proposal not passing."
+        );
+        require(
+            Projects[i].deployAddress == address(0),
+            "Project already deployed."
+        );
+        createProject(Finders[i], Owners[i], Thresholds[i], i);
     }
 
     function createProject(
         address finderWallet,
         address[] memory owners,
-        uint256 threshold
+        uint256 threshold,
+        uint256 i
     ) private {
         address payable gnosisSafe;
         gnosisSafe = payable(Clones.clone(gnosisLogic));
@@ -114,6 +136,7 @@ contract dOrgProjectFactory {
         project = payable(Clones.clone(dOrgProjectLogic));
         dOrgProject(project).initialize(payees, shares);
 
-        emit ProjectCreated(project,gnosisSafe);
+        Projects[i].deployAddress = project;
+        emit ProjectCreated(project, gnosisSafe);
     }
 }
