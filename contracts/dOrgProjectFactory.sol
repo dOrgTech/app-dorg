@@ -103,6 +103,10 @@ contract dOrgProjectFactory {
             Projects[i].deployAddress == address(0),
             "Project already deployed."
         );
+        require(
+            block.timestamp > Projects[i].createdAt + 604800,
+            "Voting period has note yet closed."
+        );
         createProject(Finders[i], Owners[i], Thresholds[i], i);
     }
 
