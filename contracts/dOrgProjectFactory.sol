@@ -38,6 +38,7 @@ contract dOrgProjectFactory {
     uint256 public projectIndex = 0;
     mapping(uint256 => Project) public Projects;
     mapping(uint256 => mapping(address => bool)) public Votes;
+    mapping(uint256 => address[]) public Voters;
     mapping(uint256 => address[]) public Owners;
     mapping(uint256 => address) public Finders;
     mapping(uint256 => uint256) public Thresholds;
@@ -73,6 +74,10 @@ contract dOrgProjectFactory {
         return Projects[i];
     }
 
+    function getVoters(uint256 i) public view returns (address[] memory) {
+        return Voters[i];
+    }
+
     function vote(uint256 i, bool approval) public {
         require(
             block.timestamp < Projects[i].createdAt + 604800,
@@ -86,6 +91,7 @@ contract dOrgProjectFactory {
             Projects[i].againstVotes += 1;
         }
         Votes[i][msg.sender] = approval;
+        Voters[i].push(msg.sender);
     }
 
     function deployProject(uint256 i) public {

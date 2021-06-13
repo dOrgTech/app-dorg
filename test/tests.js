@@ -50,6 +50,12 @@ contract(
       await Promise.all([1,2,3,4].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
       await Promise.all([5,6,7].map(async(i)=> await factory.vote(0, false, {from: accounts[i]})));
       const project = await factory.getProject(0);
+      console.log(project)
+    });
+
+    it("Should return a list of those who voted.", async () => {
+      const voters = await factory.getVoters(0);
+      console.log(voters);
     });
 
     it("Should revert if you try to vote twice.", async () => {
