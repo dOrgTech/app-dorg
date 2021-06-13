@@ -73,18 +73,17 @@ contract dOrgProjectFactory {
         return Projects[i];
     }
 
-    function vote(uint256 i, bool approval) public returns (Project memory) {
+    function vote(uint256 i, bool approval) public {
         require(
             block.timestamp < Projects[i].createdAt + 604800,
             "Voting period has closed."
         );
-        if (!Votes[i][msg.sender]) {
-            if (approval == true) {
-                Projects[i].forVotes += 1;
-            }
-            if (approval == false) {
-                Projects[i].againstVotes += 1;
-            }
+        require(!Votes[i][msg.sender], 'Cannot vote twice.');
+        if (approval == true) {
+            Projects[i].forVotes += 1;
+        }
+        if (approval == false) {
+            Projects[i].againstVotes += 1;
         }
         Votes[i][msg.sender] = approval;
     }

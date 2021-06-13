@@ -47,8 +47,14 @@ contract(
     });
 
     it("Should vote for project.", async () => {
-      const v = await factory.vote(0, true);
+      await Promise.all([1,2,3,4].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
+      await Promise.all([5,6,7].map(async(i)=> await factory.vote(0, false, {from: accounts[i]})));
       const project = await factory.getProject(0);
+    });
+
+    it("Should revert if you try to vote twice.", async () => {
+      let tryToVoteTwice = Promise.all([1,1].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
+      await truffleAssert.reverts(tryToVoteTwice);
     });
 
     it("Should deploy a project.", async () => {
