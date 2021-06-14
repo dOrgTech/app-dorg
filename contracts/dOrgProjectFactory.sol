@@ -44,8 +44,6 @@ contract dOrgProjectFactory {
     mapping(uint256 => uint256) public Thresholds;
     mapping(uint256 => address) public GnosisSafes;
 
-    event ProjectCreated(address projectAddress, address gnosisSafeAddress);
-
     constructor(address _gnosisLogic) {
         treasuryWallet = address(0x15344EcDc2c4EDFCB092E284d93c20F0529FD8a6);
         dOrgProjectLogic = address(new dOrgProject());
@@ -69,6 +67,10 @@ contract dOrgProjectFactory {
             address(0)
         );
         projectIndex++;
+    }
+
+    function getProjectIndex() public view returns (uint256){
+        return projectIndex;
     }
 
     function getProject(uint256 i) public view returns (Project memory) {
