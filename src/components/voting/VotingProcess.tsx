@@ -85,7 +85,10 @@ export const VotingProcess: React.FC<VotingProcessProps> = ({
 
   return (
     <div>
-      <Box display="grid" gridTemplateColumns="48px auto 48px" marginTop="16px">
+      <Box className={[classes.resultContainer, boxClass].join(" ")}>
+        {result}
+      </Box>
+      <Box display="grid" gridTemplateColumns="48px auto 48px" marginTop="8px">
         <VoteButton down />
         <Box
           display="grid"
@@ -147,10 +150,6 @@ export const VotingProcess: React.FC<VotingProcessProps> = ({
           </Grid>
         </Box>
         <VoteButton />
-      </Box>
-
-      <Box className={[classes.resultContainer, boxClass].join(" ")}>
-        {result}
       </Box>
     </div>
   );

@@ -61,7 +61,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
       <Box
         display="flex"
         flexDirection="row"
-        marginTop="4px"
+        marginTop="1rem"
         alignItems="center"
       >
         <Typography variant="h2">Create a New Project</Typography>
