@@ -32,30 +32,37 @@ contract(
       factory = await dOrgProjectFactory.deployed();
     });
 
-    it("Should create new project.", async () => {
-      const ipfsPath = await client.add(JSON.stringify(proposal));
-      const newp = await factory.newProject(
-        ipfsPath["path"],
-        gnosisOwners,
-        finderWallet,
-        threshold
-      );
+    it("Should create three new projects.", async () => {
+      const newProject = async () => {
+        const ipfsPath = await client.add(JSON.stringify(proposal));
+        const newp = await factory.newProject(
+          ipfsPath["path"],
+          gnosisOwners,
+          finderWallet,
+          threshold
+        );
+      }
+      newProject();
+      newProject();
+      newProject();
     });
 
     it("Should return a project by ID.", async () => {
       const project = await factory.getProject(0);
     });
 
+    it("Should return a list of projects sliced by start index and end index..", async () => {
+      const projects = await factory.getProjects(0,2);
+    });
+
     it("Should vote for project.", async () => {
       await Promise.all([1,2,3,4].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
       await Promise.all([5,6,7].map(async(i)=> await factory.vote(0, false, {from: accounts[i]})));
       const project = await factory.getProject(0);
-      console.log(project)
     });
 
     it("Should return a list of those who voted.", async () => {
       const voters = await factory.getVoters(0);
-      console.log(voters);
     });
 
     it("Should revert if you try to vote twice.", async () => {

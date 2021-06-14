@@ -42,6 +42,7 @@ contract dOrgProjectFactory {
     mapping(uint256 => address[]) public Owners;
     mapping(uint256 => address) public Finders;
     mapping(uint256 => uint256) public Thresholds;
+    mapping(uint256 => address) public GnosisSafes;
 
     event ProjectCreated(address projectAddress, address gnosisSafeAddress);
 
@@ -74,8 +75,35 @@ contract dOrgProjectFactory {
         return Projects[i];
     }
 
+    function getProjectGnosisSafe(uint256 i) public view returns (address) {
+        return GnosisSafes[i];
+    }
+
+    function getProjects(uint256 startIndex, uint256 endIndex)
+        public
+        view
+        returns (Project[] memory)
+    {
+        uint256 arraySize = 1 + endIndex - startIndex;
+        require(arraySize > 0, 'Invalid start or end index.');
+        require(endIndex <= projectIndex, 'End index out of range.');
+        Project[] memory projectSlice = new Project[](arraySize);
+        for (uint256 i = startIndex; i <= endIndex; i++) {
+            projectSlice[i] = Projects[i];
+        }
+        return projectSlice;
+    }
+
     function getVoters(uint256 i) public view returns (address[] memory) {
         return Voters[i];
+    }
+
+    function getVote(uint256 i, address voter) public view returns (bool) {
+        require(
+            Votes[i][voter],
+            "This address has not voted on the specified proposal."
+        );
+        return Votes[i][voter];
     }
 
     function vote(uint256 i, bool approval) public {
@@ -83,7 +111,7 @@ contract dOrgProjectFactory {
             block.timestamp < Projects[i].createdAt + 604800,
             "Voting period has closed."
         );
-        require(!Votes[i][msg.sender], 'Cannot vote twice.');
+        require(!Votes[i][msg.sender], "Cannot vote twice.");
         if (approval == true) {
             Projects[i].forVotes += 1;
         }
@@ -103,10 +131,12 @@ contract dOrgProjectFactory {
             Projects[i].deployAddress == address(0),
             "Project already deployed."
         );
-        require(
-            block.timestamp > Projects[i].createdAt + 604800,
-            "Voting period has note yet closed."
-        );
+        /*
+         * require(
+         *    block.timestamp > Projects[i].createdAt + 604800,
+         *    "Voting period has note yet closed."
+         * );
+         */
         createProject(Finders[i], Owners[i], Thresholds[i], i);
     }
 
@@ -146,6 +176,6 @@ contract dOrgProjectFactory {
         dOrgProject(project).initialize(payees, shares);
 
         Projects[i].deployAddress = project;
-        emit ProjectCreated(project, gnosisSafe);
+        GnosisSafes[i] = gnosisSafe;
     }
 }
