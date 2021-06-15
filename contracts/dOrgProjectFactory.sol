@@ -109,11 +109,13 @@ contract dOrgProjectFactory {
     }
 
     function vote(uint256 i, bool approval) public {
+        for(uint v = 0; v<Voters[i].length; v++){
+            require(Voters[i][v] != msg.sender, 'Cannot vote twice.');
+        }
         require(
             block.timestamp < Projects[i].createdAt + 604800,
             "Voting period has closed."
         );
-        require(!Votes[i][msg.sender], "Cannot vote twice.");
         if (approval == true) {
             Projects[i].forVotes += 1;
         }

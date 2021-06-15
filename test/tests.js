@@ -33,18 +33,12 @@ contract(
     });
 
     it("Should create three new projects.", async () => {
-      const newProject = async () => {
-        const ipfsPath = await client.add(JSON.stringify(proposal));
-        const newp = await factory.newProject(
-          ipfsPath["path"],
-          gnosisOwners,
-          finderWallet,
-          threshold
-        );
-      }
-      newProject();
-      newProject();
-      newProject();
+      const ipfsPath = await client.add(JSON.stringify(proposal));
+      const proj1 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
+      const proj2 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
+      const proj3 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
+      const proj = await factory.getProjectIndex();
+      assert.equal(proj.toNumber(),3)
     });
 
     it("Should return a project by ID.", async () => {
@@ -53,12 +47,13 @@ contract(
 
     it("Should return a list of projects sliced by start index and end index..", async () => {
       const projects = await factory.getProjects(0,2);
+      assert.equal(projects.length, 3)
     });
 
     it("Should vote for project.", async () => {
-      await Promise.all([1,2,3,4].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
-      await Promise.all([5,6,7].map(async(i)=> await factory.vote(0, false, {from: accounts[i]})));
+      const vote = await factory.vote(0, true, {from: senderWallet})
       const project = await factory.getProject(0);
+      assert.equal(project['forVotes'],1)
     });
 
     it("Should return a list of those who voted.", async () => {
@@ -84,7 +79,8 @@ contract(
         threshold
       );
       const v = await factory.vote(1, false);
-      await truffleAssert.reverts(factory.deployProject(1));
+      const projIndex = await factory.getProjectIndex()
+      await truffleAssert.reverts(factory.deployProject(projIndex));
     });
 
     it("Should create new project, vote for, try to deploy twice, and revert.", async () => {
