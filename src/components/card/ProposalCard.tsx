@@ -5,6 +5,7 @@ import DorgIcon from "../../assets/images/dorg-icon.svg";
 import { TimeText } from "../text/TimeText";
 import { AvatarGroup } from "../avatar/AvatarGroup";
 import { COLORS } from "../../utils/colors";
+import { ActiveButton } from "../button/ActiveButton";
 import { VotingProcess } from "../voting/VotingProcess";
 import { Proposal } from "../../store/reducers/proposals/model";
 
@@ -15,10 +16,20 @@ interface ProposalCardProps {
 const useStyles = makeStyles({
   root: {
     borderRadius: 16,
-    width: "100%",
+    boxShadow: "0px 0px 2px 0px #94A3B840, 0px 16px 32px -4px #94A3B840",
+    cursor: "pointer",
     maxWidth: 400,
     minHeight: 300,
-    boxShadow: "0px 0px 2px 0px #94A3B840, 0px 16px 32px -4px #94A3B840",
+    transform: "translateY(0)",
+    transition: "transform 0.25s ease-in-out",
+    width: "100%",
+    "&:hover": {
+      transform: `translateY(-4px)`,
+      "& .MuiButton-outlinedPrimary": {
+        backgroundColor: COLORS.green["50"],
+        border: `1px solid ${COLORS.green["600"]}`,
+      },
+    },
   },
   content: {
     padding: 24,
@@ -47,6 +58,11 @@ const useStyles = makeStyles({
   greyContainer: {
     borderRadius: 8,
     backgroundColor: COLORS.blueGray["50"],
+  },
+  projectButton: {
+    color: COLORS.green["600"],
+    marginTop: 16,
+    width: "100%",
   },
 });
 
@@ -103,6 +119,9 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
           againstVotes={againstVotes}
           forVotes={forVotes}
         />
+        <ActiveButton className={classes.projectButton} variant="outlined">
+          View Project
+        </ActiveButton>
       </CardContent>
     </Card>
   );
