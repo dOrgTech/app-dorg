@@ -28,6 +28,7 @@ contract dOrgProjectFactory {
     address public immutable gnosisLogic;
 
     struct Project {
+        uint256 id;
         string metadataURI;
         uint256 forVotes;
         uint256 againstVotes;
@@ -60,6 +61,7 @@ contract dOrgProjectFactory {
         Finders[projectIndex] = finder;
         Thresholds[projectIndex] = threshold;
         Projects[projectIndex] = Project(
+            projectIndex,
             metadataURI,
             0,
             0,
