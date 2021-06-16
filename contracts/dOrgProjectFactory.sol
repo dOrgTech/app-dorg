@@ -57,6 +57,7 @@ contract dOrgProjectFactory {
         address finder,
         uint256 threshold
     ) public {
+        projectIndex++;
         Owners[projectIndex] = owners;
         Finders[projectIndex] = finder;
         Thresholds[projectIndex] = threshold;
@@ -68,7 +69,6 @@ contract dOrgProjectFactory {
             block.timestamp,
             address(0)
         );
-        projectIndex++;
     }
 
     function getProjectIndex() public view returns (uint256){
@@ -76,6 +76,7 @@ contract dOrgProjectFactory {
     }
 
     function getProject(uint256 i) public view returns (Project memory) {
+        require(Projects[i].id != 0, 'Project does not exist.');
         return Projects[i];
     }
 
@@ -92,7 +93,7 @@ contract dOrgProjectFactory {
         require(arraySize > 0, 'Invalid start or end index.');
         require(endIndex <= projectIndex, 'End index out of range.');
         Project[] memory projectSlice = new Project[](arraySize);
-        for (uint256 i = startIndex; i <= endIndex; i++) {
+        for (uint256 i = startIndex; i < endIndex; i++) {
             projectSlice[i] = Projects[i];
         }
         return projectSlice;

@@ -42,22 +42,22 @@ contract(
     });
 
     it("Should return a project by ID.", async () => {
-      const project = await factory.getProject(0);
+      const project = await factory.getProject(1);
     });
 
     it("Should return a list of projects sliced by start index and end index..", async () => {
-      const projects = await factory.getProjects(0,2);
+      const projects = await factory.getProjects(1,3);
       assert.equal(projects.length, 3)
     });
 
     it("Should vote for project.", async () => {
-      const vote = await factory.vote(0, true, {from: senderWallet})
-      const project = await factory.getProject(0);
+      const vote = await factory.vote(1, true, {from: senderWallet})
+      const project = await factory.getProject(1);
       assert.equal(project['forVotes'],1)
     });
 
     it("Should return a list of those who voted.", async () => {
-      const voters = await factory.getVoters(0);
+      const voters = await factory.getVoters(1);
     });
 
     it("Should revert if you try to vote twice.", async () => {
@@ -66,8 +66,8 @@ contract(
     });
 
     it("Should deploy a project.", async () => {
-      const d = await factory.deployProject(0);
-      const project = await factory.getProject(0);
+      const d = await factory.deployProject(1);
+      const project = await factory.getProject(1);
     });
 
     it("Should create new project, vote against, try to deploy, and revert.", async () => {
@@ -78,8 +78,8 @@ contract(
         finderWallet,
         threshold
       );
-      const v = await factory.vote(1, false);
       const projIndex = await factory.getProjectIndex()
+      const v = await factory.vote(projIndex -1, false);
       await truffleAssert.reverts(factory.deployProject(projIndex));
     });
 
@@ -97,7 +97,7 @@ contract(
     });
 
     it("Project clone cannot be re-initialized.", async () => {
-      const projectCloneAddress = await factory.getProject(0);
+      const projectCloneAddress = await factory.getProject(1);
       projectClone = await dOrgProject.at(projectCloneAddress.deployAddress);
       let tryToReInitialize = projectClone.initialize(
         [maliciousWallet, accounts[1], accounts[2]],

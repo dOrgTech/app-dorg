@@ -1,10 +1,11 @@
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 
-module.exports = function (deployer) {
+module.exports = function (deployer, network) {
 
   var gnosisLogic;
+  console.log(network)
 
-  if(deployer.network == 'development'){
+  if(network === 'development'){
     // You must deploy gnosis locally
     // cd into safe-contracts directory then run
     // npx hardhat deploy --network localhost
@@ -12,7 +13,11 @@ module.exports = function (deployer) {
     gnosisLogic = "0xb4A7C7da1631CF60A2Cf23ABc86986f99a1A7f70";
   }
   
-  if(deployer.network == 'rinkeby'){
+  if(network === 'rinkeby-fork'){
+    gnosisLogic = "0x6851D6fDFAfD08c0295C392436245E5bc78B0185"
+  }
+
+  if(network === 'rinkeby'){
     gnosisLogic = "0x6851D6fDFAfD08c0295C392436245E5bc78B0185"
   }
 
