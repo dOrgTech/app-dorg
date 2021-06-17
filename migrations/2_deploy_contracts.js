@@ -1,6 +1,6 @@
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 
-module.exports = function (deployer, network) {
+module.exports = async function (deployer, network) {
 
   var gnosisLogic;
   console.log(network)

@@ -10,19 +10,27 @@
 
 ## To Test
 
-For local testing, you need to deploy GnosisSafe to your localhost.
+For local testing, you need to deploy GnosisSafe to your localhost. 
 
-`git clone https://github.com/gnosis/safe-contracts.git`
-`yarn hardhat --network localhost deploy`
+1) Run a local RPC server (e.g. ganache)
 
-In `app-dorg` root. In `2_deploy_contracts` make sure local gnosis logic is passed at deployment.
-`truffle migrate --network development --reset`
-`truffle test`
+2) Deploy GnosisSafe contracts to localhost. These are too large to be imported directly.
 
-## To Deploy/Test on Rinkeby
+- `cd safe-contracts`
+- `npx hardhat deploy --network localhost`
 
-Put a private key mnemonic with rinkeby ether in `.secret`
-In `app-dorg` root. In `2_deploy_contracts` make sure rinkeby gnosis logic is passed at deployment.
+3) Run tests locally:
 
-`truffle migrate --network rinkeby --reset`
-`truffle test --network rinkeby`
+- Copy and paste `GnosisSafe` contract address to `migrations/2_deploy_contracts.js` as local dev variable for Gnosis logic.
+
+- `truffle migrate --reset` to deploy
+
+- `truffle test` to run the tests
+
+- `truffle exec test/scripts/populateContract.js` to load sample projects into the contract.
+
+- `truffle exec test/scripts/getProjects.js` to test return of data from the contract.
+
+4) Deploy to rinkeby, run tests, etc.
+
+- Append `--network rinkeby`. Make sure you have your private key mnemonic in `.secret` in project root.

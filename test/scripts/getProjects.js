@@ -8,7 +8,8 @@ const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 module.exports = async function(callback){
 
     let factory = await dOrgProjectFactory.deployed();
-    const projects = await factory.getProject(19).catch(console.log);
+    let projectIndex = await factory.getProjectIndex();
+    const projects = await factory.getProjects(1,projectIndex.toNumber()).catch(console.log);
     console.log(projects)
     callback()
 }

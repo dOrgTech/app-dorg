@@ -93,8 +93,8 @@ contract dOrgProjectFactory {
         require(arraySize > 0, 'Invalid start or end index.');
         require(endIndex <= projectIndex, 'End index out of range.');
         Project[] memory projectSlice = new Project[](arraySize);
-        for (uint256 i = startIndex; i < endIndex; i++) {
-            projectSlice[i] = Projects[i];
+        for (uint256 i = 0; i < arraySize; i++) {
+            projectSlice[i] = Projects[startIndex + i];
         }
         return projectSlice;
     }
