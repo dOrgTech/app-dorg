@@ -4,9 +4,29 @@
 
 ## Contracts
 
-`dOrgProjectFactory.sol` -- Factory that makes lighthweight clones of `dOrgProject.sol`.
+`dOrgProjectFactory.sol` -- Factory that makes lighthweight clones of `dOrgProject.sol`. It stores a mapping of projects, which are accessed by an incrementing counter. Projects are considered proposals until they are deployed, at which time the `deployAddress` is assigned the location of the `dOrgProject.sol` clone. 
 
-- `createProject(string projectName, address finderWallet, address[] gnosisOwners, uint256 threshold)`. Creates a multisig gnosis safe with parameters gnosisOwners, threshold. Then, creates a dOrgProject payment splitter that will send 80% of funds to gnosis safe, 10% to treasury, 10% to finder when funds are released.
+`dOrgProject.sol` -- A payment splitter that sends 10% to finder, 10% to treasury, 80% to a GnosisSafe that has been created with the correct owners and signatory threshold that was passed to the newProject function. 
+
+```
+
+newProject(metadataURI, owners, finder, threshold) -- creates new project proposal and pushes to a mapping.
+
+getProjectIndex() -- returns last created project id
+
+getProject(id) -- returns status of project (votes, whether it's been deployed, metadata URI)
+
+getProjects(startindex,endindex) -- returns array of projects, inclusive indexing (start index must be 1, not 0)
+
+vote(id, boolean) -- vote yes or no (true/false)
+
+getVoters(id)-- see who has voted (but not how, at this point)
+
+getVote(id, voter) -- how a person voted for a specific project
+
+deployProject(id) -- calls createProject to deploy a project that has votes and is passing. 
+
+```
 
 ## To Test
 

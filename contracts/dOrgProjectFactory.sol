@@ -121,8 +121,7 @@ contract dOrgProjectFactory {
         );
         if (approval == true) {
             Projects[i].forVotes += 1;
-        }
-        if (approval == false) {
+        } else {
             Projects[i].againstVotes += 1;
         }
         Votes[i][msg.sender] = approval;
