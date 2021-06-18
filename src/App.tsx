@@ -13,7 +13,7 @@ function App() {
     <ReduxProvider store={reduxStore}>
       <ThemeProvider>
         <BrowserRouter>
-          {connected ? <RootPage /> : loading ? null : <WalletConnection />}
+          {connected ? <RootPage /> : <WalletConnection loading={loading} />}
         </BrowserRouter>
       </ThemeProvider>
     </ReduxProvider>

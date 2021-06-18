@@ -1,5 +1,11 @@
 import React from "react";
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import DorgLogoIcon from "../../assets/images/dorg-logo.svg";
 import { blueGrey } from "@material-ui/core/colors";
 import { requestAccounts } from "../../services/ethereum";
@@ -38,23 +44,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const WalletConnection = () => {
+export const WalletConnection = ({ loading }: { loading: boolean }) => {
   const classes = useStyles();
   return (
     <Box className={classes.root}>
-      <img src={DorgLogoIcon} alt="Project Icon" className={classes.logo} />
-      <Box className={classes.divider} />
-      <Typography variant="h5" className={classes.title}>
-        Connect wallet to sign in:
-      </Typography>
-      <Button
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        onClick={requestAccounts}
-      >
-        Connect Wallet
-      </Button>
+      {loading ? (
+        <CircularProgress color="primary" />
+      ) : (
+        <>
+          <img src={DorgLogoIcon} alt="Project Icon" className={classes.logo} />
+          <Box className={classes.divider} />
+          <Typography variant="h5" className={classes.title}>
+            Connect wallet to sign in:
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            className={classes.button}
+            onClick={requestAccounts}
+          >
+            Connect Wallet
+          </Button>
+        </>
+      )}
     </Box>
   );
 };

@@ -14,7 +14,7 @@ export function useIsWalletConnected() {
       else setConnected(false);
     };
     onAccountsChange(listener);
-    getProvider().listAccounts().then(listener);
+    if (ethereum) getProvider().listAccounts().then(listener);
   }, []);
   return { connected, loading };
 }
