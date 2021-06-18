@@ -5,15 +5,15 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeProvider";
 import { RootPage } from "./views/RootPage";
 import { WalletConnection } from "./views/WalletConnection/WalletConnection";
-import { useConnectedWallet } from "./services/ethereum";
+import { useIsWalletConnected } from "./services/ethereum";
 
 function App() {
-  const connectedWallet = useConnectedWallet();
+  const { connected, loading } = useIsWalletConnected();
   return (
     <ReduxProvider store={reduxStore}>
       <ThemeProvider>
         <BrowserRouter>
-          {connectedWallet ? <RootPage /> : <WalletConnection />}
+          {connected ? <RootPage /> : loading ? null : <WalletConnection />}
         </BrowserRouter>
       </ThemeProvider>
     </ReduxProvider>

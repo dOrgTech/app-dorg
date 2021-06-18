@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 // eslint-disable-next-line
 const ethereum = (window as any).ethereum;
 
-export function useConnectedWallet() {
-  const [wallet, setWallet] = useState<string>();
+export function useIsWalletConnected() {
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    onAccountsChange((accounts) => {
-      if (accounts.length) setWallet(accounts[0]);
-      else setWallet(undefined);
-    });
+    const listener = (accounts: string[]) => {
+      setLoading(false);
+      if (accounts.length) setConnected(true);
+      else setConnected(false);
+    };
+    onAccountsChange(listener);
+    getProvider().listAccounts().then(listener);
   }, []);
-  return wallet;
+  return { connected, loading };
 }
 
 export function requestAccounts() {
