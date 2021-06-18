@@ -4,19 +4,16 @@ import { reduxStore } from "./store";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeProvider";
 import { RootPage } from "./views/RootPage";
-
-// eslint-disable-next-line
-const ethereum = (window as any).ethereum;
+import { WalletConnection } from "./views/WalletConnection/WalletConnection";
+import { useIsWalletConnected } from "./services/ethereum";
 
 function App() {
-  if (!ethereum) {
-    return <h1>Please Install MetaMask</h1>;
-  }
+  const { connected, loading } = useIsWalletConnected();
   return (
     <ReduxProvider store={reduxStore}>
       <ThemeProvider>
         <BrowserRouter>
-          <RootPage />
+          {connected ? <RootPage /> : <WalletConnection loading={loading} />}
         </BrowserRouter>
       </ThemeProvider>
     </ReduxProvider>
