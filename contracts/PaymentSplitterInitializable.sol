@@ -112,10 +112,9 @@ contract PaymentSplitterInitializable is Initializable, Context {
         require(_shares[account] > 0, "PaymentSplitter: account has no shares");
 
         uint256 totalReceived = address(this).balance + _totalReleased;
-        uint256 payment =
-            (totalReceived * _shares[account]) /
-                _totalShares -
-                _released[account];
+        uint256 payment = (totalReceived * _shares[account]) /
+            _totalShares -
+            _released[account];
 
         require(payment != 0, "PaymentSplitter: account is not due payment");
 
