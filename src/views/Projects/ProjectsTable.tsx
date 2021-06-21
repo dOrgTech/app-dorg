@@ -82,12 +82,12 @@ export const ProjectsTable = () => {
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <TableRow key={row.name}>
+              <TableRow key={row.metadata.projectName}>
                 <TableCell>
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <img className={classes.logo} src={row.logo} alt="logo" />
                     <Typography variant="h4" className={classes.projectTitle}>
-                      {row.name}
+                      {row.metadata.projectName}
                     </Typography>
                   </Box>
                 </TableCell>
