@@ -2,14 +2,14 @@ import {
   getDOrgProjectContract,
   getDOrgProjectFactoryContract,
 } from "../contracts";
-import { Signer } from "ethers";
+import { BigNumberish, Signer } from "ethers";
 import { Project } from "../store/reducers/projects/model";
 import { getProvider, getSigner } from "./ethereum";
 
 export async function getProjectData(projectAddress: string) {
   const signer = getSigner();
   const dOrgProject = getDOrgProjectContract(signer, projectAddress);
-  const projectName = await dOrgProject.projectName();
+  // const projectName = await dOrgProject.projectName();
   const payees = await Promise.all([0, 1, 2].map((i) => dOrgProject.payee(i)));
   const shares = await Promise.all(payees.map((p) => dOrgProject.shares(p)));
   const totalShares = await dOrgProject.totalShares();
@@ -17,7 +17,7 @@ export async function getProjectData(projectAddress: string) {
 
   return {
     projectAddress,
-    projectName,
+    // projectName,
     payees,
     shares,
     totalShares,
@@ -25,18 +25,36 @@ export async function getProjectData(projectAddress: string) {
   };
 }
 
+// string memory metadataURI,
+// address[] memory owners,
+// address finder,
+// uint256 threshold
+
 export async function deployProjectContract(
   signer: Signer,
-  project: Pick<Project, "name" | "sourcingWallet" | "members" | "threshold">
+  project: Pick<
+    Project,
+    "metadataURI" | "owners" | "sourcingWallet" | "threshold"
+  >
 ) {
   const dOrgProjectFactory = getDOrgProjectFactoryContract(signer);
-  return dOrgProjectFactory.createProject(
-    project.name,
+  return dOrgProjectFactory.newProject(
+    project.metadataURI,
+    project.owners,
     project.sourcingWallet,
-    project.members,
     project.threshold,
     { gasLimit: 1000000 }
   );
+}
+
+export async function getProjects(
+  startIndex: BigNumberish,
+  endIndex: BigNumberish
+) {
+  const signer = getSigner();
+  const dOrgProjectFactory = getDOrgProjectFactoryContract(signer);
+  const results = await dOrgProjectFactory.getProjects(startIndex, endIndex);
+  return results;
 }
 
 export async function onProjectCreatedEvent(
@@ -44,5 +62,5 @@ export async function onProjectCreatedEvent(
 ) {
   const provider = getProvider();
   const dOrgProjectFactory = getDOrgProjectFactoryContract(provider);
-  dOrgProjectFactory.on("ProjectCreated", listener);
+  // dOrgProjectFactory.on("ProjectCreated", listener);
 }

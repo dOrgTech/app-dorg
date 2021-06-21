@@ -14,6 +14,8 @@ import { AvatarGroup } from "../../components/avatar/AvatarGroup";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { COLORS } from "../../utils/colors";
 import { ProjectStatusChip } from "./ProjectStatusChip";
+import { useRootDispatch } from "../../store";
+import { getProjectsByIndex } from "../../store/reducers/projects/projectsSlice";
 import { ProjectsTableFilters } from "./ProjectsTableFilters";
 
 const useStyles = makeStyles({
@@ -48,31 +50,12 @@ const useStyles = makeStyles({
   },
 });
 
-const rows: Project[] = [
-  {
-    name: "Badger DAO",
-    logo: BadgerLogo,
-    totalInvoiced: 55302,
-    totalUnit: "xDAI",
-    sourcingWallet: "0x00",
-    threshold: 1,
-    members: [AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg],
-    status: ProjectStatus.ACTIVE,
-  },
-  {
-    name: "Badger DAO 2",
-    logo: BadgerLogo,
-    totalInvoiced: 55302,
-    totalUnit: "xDAI",
-    sourcingWallet: "0x00",
-    threshold: 1,
-    members: [AvatarImg, AvatarImg],
-    status: ProjectStatus.PENDING,
-  },
-];
-
-export const ProjectsTable = () => {
+export const ProjectsTable = async () => {
   const classes = useStyles();
+  const dispatch = useRootDispatch();
+  const rows = await dispatch(
+    getProjectsByIndex({ startIndex: 1, endIndex: 10 })
+  );
 
   return (
     <>
@@ -91,7 +74,7 @@ export const ProjectsTable = () => {
               <TableCell className={classes.tableHeaderCell}>
                 Total Invoiced
               </TableCell>
-              <TableCell className={classes.tableHeaderCell}>Members</TableCell>
+              <TableCell className={classes.tableHeaderCell}>owners</TableCell>
               <TableCell className={classes.tableHeaderCell}>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -116,13 +99,13 @@ export const ProjectsTable = () => {
                 </TableCell>
                 <TableCell>
                   <AvatarGroup>
-                    {row.members.map((member, index) => (
+                    {row.owners.map((member, index) => (
                       <Avatar src={member} key={index} alt="avatar" />
                     ))}
                   </AvatarGroup>
                 </TableCell>
                 <TableCell>
-                  <ProjectStatusChip status={row.status} />
+                  {/* <ProjectStatusChip status={row.status} /> */}
                 </TableCell>
               </TableRow>
             ))}

@@ -47,8 +47,8 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
   const handleSubmit = () => {
     const project: Project = {
-      name: projectName,
-      members: builders,
+      metadataURI: "",
+      owners: builders,
       threshold: BigNumber.from(1),
       sourcingWallet,
       status: ProjectStatus.PENDING,

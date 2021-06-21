@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Project } from "./model";
-import { deployProjectContract } from "../../../services/projects";
+import { deployProjectContract, getProjects } from "../../../services/projects";
 import { getSigner } from "../../../services/ethereum";
+import { BigNumberish } from "ethers";
+import { stat } from "fs";
 
 interface ProjectsReducerState {
   projects: Project[];
@@ -22,6 +24,17 @@ export const createProject = createAsyncThunk(
   }
 );
 
+export const getProjectsByIndex = createAsyncThunk(
+  "projects/getprojects",
+  async (options: any) => {
+    const results: any = await getProjects(
+      options.startIndex,
+      options.endIndex
+    );
+    return await results;
+  }
+);
+
 export const projectsSlice = createSlice({
   name: "projects",
   initialState: projectsReducerInitialState,
@@ -32,6 +45,9 @@ export const projectsSlice = createSlice({
       (state, action: PayloadAction<Project>) => {
         state.projects.push(action.payload);
       }
-    );
+    ),
+      builder.addCase(getProjectsByIndex.fulfilled, (state, action: any) => {
+        console.log(action.payload);
+      });
   },
 });
