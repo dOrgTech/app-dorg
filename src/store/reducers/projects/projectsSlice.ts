@@ -47,7 +47,7 @@ export const projectsSlice = createSlice({
       }
     ),
       builder.addCase(getProjectsByIndex.fulfilled, (state, action: any) => {
-        console.log(action.payload);
+        action.payload.map((x: any) => state.projects.push(x));
       });
   },
 });
