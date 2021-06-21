@@ -50,12 +50,10 @@ const useStyles = makeStyles({
   },
 });
 
-export const ProjectsTable = async () => {
+export const ProjectsTable = () => {
   const classes = useStyles();
   const dispatch = useRootDispatch();
-  const rows = await dispatch(
-    getProjectsByIndex({ startIndex: 1, endIndex: 10 })
-  );
+  const rows = dispatch(getProjectsByIndex({ startIndex: 1, endIndex: 10 }));
 
   return (
     <>
