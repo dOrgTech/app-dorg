@@ -38,6 +38,10 @@ export async function deployProjectContract(
   >
 ) {
   const dOrgProjectFactory = getDOrgProjectFactoryContract(signer);
+  if (!(project.owners && project.sourcingWallet && project.threshold)) {
+    throw new Error("invalid values");
+  }
+
   return dOrgProjectFactory.newProject(
     project.metadataURI,
     project.owners,

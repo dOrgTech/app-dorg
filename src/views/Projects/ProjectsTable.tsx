@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,7 +14,7 @@ import { AvatarGroup } from "../../components/avatar/AvatarGroup";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { COLORS } from "../../utils/colors";
 import { ProjectStatusChip } from "./ProjectStatusChip";
-import { useRootDispatch } from "../../store";
+import { useRootDispatch, useRootSelector } from "../../store";
 import { getProjectsByIndex } from "../../store/reducers/projects/projectsSlice";
 import { ProjectsTableFilters } from "./ProjectsTableFilters";
 
@@ -53,7 +53,11 @@ const useStyles = makeStyles({
 export const ProjectsTable = () => {
   const classes = useStyles();
   const dispatch = useRootDispatch();
-  const rows = dispatch(getProjectsByIndex({ startIndex: 1, endIndex: 10 }));
+  const rows = useRootSelector((state) => state.projects.projects);
+
+  useEffect(() => {
+    dispatch(getProjectsByIndex({ startIndex: 1, endIndex: 10 }));
+  }, []);
 
   return (
     <>
@@ -97,9 +101,11 @@ export const ProjectsTable = () => {
                 </TableCell>
                 <TableCell>
                   <AvatarGroup>
-                    {row.owners.map((member, index) => (
-                      <Avatar src={member} key={index} alt="avatar" />
-                    ))}
+                    {row.owners
+                      ? row.owners.map((member, index) => (
+                          <Avatar src={member} key={index} alt="avatar" />
+                        ))
+                      : []}
                   </AvatarGroup>
                 </TableCell>
                 <TableCell>

@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const fs = require("fs");
 
-const mnemonic = fs.readFileSync(".secret");
+dotenv.config();
+
+const mnemonic = process.env.NMEMONIC;
 
 module.exports = {
   networks: {
@@ -13,12 +14,13 @@ module.exports = {
     },
     rinkeby: {
       provider: () =>
-      new HDWalletProvider({
-        mnemonic: {
-          phrase: mnemonic.toString()
-        },
-        providerOrUrl: "https://rinkeby.infura.io/v3/811d39a9e58e4555b9b91707fa36bb60",
-      }),
+        new HDWalletProvider({
+          mnemonic: {
+            phrase: mnemonic.toString(),
+          },
+          providerOrUrl:
+            "https://rinkeby.infura.io/v3/811d39a9e58e4555b9b91707fa36bb60",
+        }),
       network_id: 4,
       confirmations: 1,
     },

@@ -26,12 +26,9 @@ export const createProject = createAsyncThunk(
 
 export const getProjectsByIndex = createAsyncThunk(
   "projects/getprojects",
-  async (options: any) => {
-    const results: any = await getProjects(
-      options.startIndex,
-      options.endIndex
-    );
-    return await results;
+  async (options: { startIndex: number; endIndex: number }) => {
+    const results = await getProjects(options.startIndex, options.endIndex);
+    return results;
   }
 );
 
@@ -45,9 +42,14 @@ export const projectsSlice = createSlice({
       (state, action: PayloadAction<Project>) => {
         state.projects.push(action.payload);
       }
-    ),
-      builder.addCase(getProjectsByIndex.fulfilled, (state, action: any) => {
-        action.payload.map((x: any) => state.projects.push(x));
+    );
+    builder.addCase(getProjectsByIndex.fulfilled, (state, action) => {
+      action.payload.map((contractProject) => {
+        const project: Project = {
+          metadataURI: contractProject.metadataURI,
+        };
+        state.projects.push(project);
       });
+    });
   },
 });

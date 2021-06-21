@@ -6,10 +6,11 @@ export enum ProjectStatus {
 }
 
 export interface Project {
+  id?: string;
   metadataURI: string;
-  owners: string[];
-  sourcingWallet: string;
-  threshold: BigNumberish;
+  owners?: string[];
+  sourcingWallet?: string;
+  threshold?: BigNumberish;
   status?: ProjectStatus;
   name?: string;
   logo?: string;
