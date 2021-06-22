@@ -12,6 +12,7 @@ const truffleAssert = require("truffle-assertions");
 const gnosisABI =
   require("../safe-contracts/deployments/localhost/GnosisSafe.json")["abi"];
 
+
 contract(
   "Comprehensive tests for dOrgProjectFactory and dOrgProject contracts.",
   async (accounts) => {
@@ -32,72 +33,47 @@ contract(
       factory = await dOrgProjectFactory.deployed();
     });
 
-    it("Should create three new projects.", async () => {
+    it("Should create five new proposals.", async () => {
       const ipfsPath = await client.add(JSON.stringify(proposal));
-      const proj1 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
-      const proj2 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
-      const proj3 = await factory.newProject(ipfsPath, gnosisOwners, finderWallet, threshold, {from:senderWallet});
-      const proj = await factory.getProjectIndex();
-      assert.equal(proj.toNumber(),3)
+      await Promise.all([1,2,3,4,5].map(x => factory.newProposal(ipfsPath, {from:senderWallet})));
+      const propIndex = await factory.proposalIndex.call()
+      assert.equal(propIndex, 5)
     });
 
-    it("Should return a project by ID.", async () => {
-      const project = await factory.getProject(1);
+    it("Should vote for two proposals and verify vote on one of them.", async () => {
+      await Promise.all([1,2].map(x => factory.vote(x, true, {from: senderWallet})))
+      const proposal = await factory.Proposals.call(1);
+      assert.equal(proposal['forVotes'],1)
     });
 
-    it("Should return a list of projects sliced by start index and end index..", async () => {
-      const projects = await factory.getProjects(1,3);
-      assert.equal(projects.length, 3)
+    it("Should create two new projects.", async () => {
+      const a = await factory.newProject(1, finderWallet, gnosisOwners, threshold);
+      const b = await factory.newProject(2, finderWallet, gnosisOwners, threshold);
+      const projIndex = await factory.projectIndex.call();
+      assert.equal(projIndex,2)
     });
 
-    it("Should vote for project.", async () => {
-      const vote = await factory.vote(1, true, {from: senderWallet})
-      const project = await factory.getProject(1);
-      assert.equal(project['forVotes'],1)
-    });
-
-    it("Should return a list of those who voted.", async () => {
-      const voters = await factory.getVoters(1);
+    it("Should try to deploy twice.", async () => {
+      const newp = factory.newProject(1, finderWallet, gnosisOwners, threshold);
+      await truffleAssert.reverts(newp);
     });
 
     it("Should revert if you try to vote twice.", async () => {
-      let tryToVoteTwice = Promise.all([1,1].map(async(i)=> await factory.vote(0, true, {from: accounts[i]})));
+      let tryToVoteTwice = Promise.all([1,1].map(async(i)=> await factory.vote(1, true, {from: accounts[i]})));
       await truffleAssert.reverts(tryToVoteTwice);
-    });
-
-    it("Should deploy a project.", async () => {
-      const d = await factory.deployProject(1);
-      const project = await factory.getProject(1);
     });
 
     it("Should create new project, vote against, try to deploy, and revert.", async () => {
       const ipfsPath = await client.add(JSON.stringify(proposal));
-      const newp = await factory.newProject(
-        ipfsPath["path"],
-        gnosisOwners,
-        finderWallet,
-        threshold
-      );
-      const projIndex = await factory.getProjectIndex()
-      const v = await factory.vote(projIndex -1, false);
-      await truffleAssert.reverts(factory.deployProject(projIndex));
-    });
-
-    it("Should create new project, vote for, try to deploy twice, and revert.", async () => {
-      const ipfsPath = await client.add(JSON.stringify(proposal));
-      const newp = await factory.newProject(
-        ipfsPath["path"],
-        gnosisOwners,
-        finderWallet,
-        threshold
-      );
-      const v = await factory.vote(2, true);
-      await factory.deployProject(2);
-      await truffleAssert.reverts(factory.deployProject(2));
+      const newp = await factory.newProposal(ipfsPath);
+      const propIndex = await factory.proposalIndex.call()
+      const vote = await factory.vote(propIndex, false)
+      const tryToVoteAgainstAndDeploy = factory.newProject(propIndex, finderWallet, gnosisOwners, threshold);
+      await truffleAssert.reverts(tryToVoteAgainstAndDeploy);
     });
 
     it("Project clone cannot be re-initialized.", async () => {
-      const projectCloneAddress = await factory.getProject(1);
+      const projectCloneAddress = await factory.Projects.call(1);
       projectClone = await dOrgProject.at(projectCloneAddress.deployAddress);
       let tryToReInitialize = projectClone.initialize(
         [maliciousWallet, accounts[1], accounts[2]],
