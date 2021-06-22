@@ -5,7 +5,7 @@ import { ProjectStatus } from "../../store/reducers/projects/model";
 import { COLORS } from "../../utils/colors";
 
 interface ProjectStatusProps {
-  status: ProjectStatus;
+  status?: ProjectStatus;
 }
 
 const useStyles = makeStyles<Theme, { dark: string; light: string }>({

@@ -61,6 +61,13 @@ export async function getProjects(
   return results;
 }
 
+export async function getProjectIndex() {
+  const signer = getSigner();
+  const dOrgProjectFactory = getDOrgProjectFactoryContract(signer);
+  const results = await dOrgProjectFactory.getProjectIndex();
+  return results;
+}
+
 export async function onProjectCreatedEvent(
   listener: (projectAddress: string, gnosisSafeAddress: string) => void
 ) {

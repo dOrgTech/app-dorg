@@ -85,7 +85,11 @@ export const ProjectsTable = () => {
               <TableRow key={row.metadata.projectName}>
                 <TableCell>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                    <img className={classes.logo} src={row.logo} alt="logo" />
+                    <img
+                      className={classes.logo}
+                      src={"https://ipfs.io/ipfs/" + row.metadata.projectLogo}
+                      alt="logo"
+                    />
                     <Typography variant="h4" className={classes.projectTitle}>
                       {row.metadata.projectName}
                     </Typography>
@@ -109,7 +113,7 @@ export const ProjectsTable = () => {
                   </AvatarGroup>
                 </TableCell>
                 <TableCell>
-                  {/* <ProjectStatusChip status={row.status} /> */}
+                  <ProjectStatusChip status={row.status} />
                 </TableCell>
               </TableRow>
             ))}

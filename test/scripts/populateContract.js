@@ -3,9 +3,11 @@
 
 // from project root: truffle exec test/scripts/populateContract.js --network rinkeby
 
+
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 const { create } = require("../../node_modules/ipfs-http-client");
 const client = create("http://127.0.0.1:5001");
+const proposal = require('../ProjectMetadata.json');
 
 module.exports = async function(callback){
 
@@ -21,8 +23,8 @@ module.exports = async function(callback){
     
     for(var i = 0; i<10; i++){
         let projIndex = await factory.getProjectIndex()
-        let proposal = {projectName:"Test Project " + (projIndex.toNumber() + 1).toString()}
-        const ipfsPath = await client.add(JSON.stringify(proposal));
+        console.log(proposal)
+        const ipfsPath = await client.add(JSON.stringify(proposal),{pin:true});
         let res = await factory.newProject(ipfsPath['path'], gnosisOwners, finderWallet, threshold, {from:accounts[0]}).catch(console.log);
         projIndex = await factory.getProjectIndex()
         const proj = await factory.getProject(projIndex.toNumber()).then(console.log).catch(console.log)

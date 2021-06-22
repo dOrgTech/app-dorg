@@ -1,30 +1,17 @@
 /* eslint-disable */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Project } from "./model";
-import { deployProjectContract, getProjects } from "../../../services/projects";
+import { Project, ProjectStatus } from "./model";
+import {
+  deployProjectContract,
+  getProjects,
+  getProjectIndex,
+} from "../../../services/projects";
 import { getSigner } from "../../../services/ethereum";
-import { BigNumberish } from "ethers";
-import { stat } from "fs";
-import { RemoveCircleOutlineSharp } from "@material-ui/icons";
-import { create } from "ipfs-http-client";
-import { exception } from "console";
-
-const options: any = "http://127.0.0.1:5001";
-const client = create(options);
+import axios from "axios";
 
 interface ProjectsReducerState {
   projects: Project[];
 }
-
-const retrieveMetaData = async (uri: string) => {
-  const stream = client.cat(uri);
-  let data = "";
-  for await (const chunk of stream) {
-    let x: any = chunk;
-    data += String.fromCharCode.apply(null, x);
-  }
-  return JSON.parse(data);
-};
 
 const projectsReducerInitialState: ProjectsReducerState = {
   projects: [],
@@ -44,22 +31,38 @@ export const createProject = createAsyncThunk(
 export const getProjectsByIndex = createAsyncThunk(
   "projects/getprojects",
   async (options: { startIndex: number; endIndex: number }) => {
-    const results = await getProjects(options.startIndex, options.endIndex);
+    const projIndex = await getProjectIndex();
+    const results = await getProjects(1, projIndex);
+
     const meta: Project[] = [];
 
-      console.log(results)
-    await Promise.all(results.map(async (x, i) => {
-      const project:Project = {
-        metadataURI: x.metadataURI,
-        metadata: {}
-      }
-      try {
-        project.metadata = await retrieveMetaData(x.metadataURI);
-      } catch(e) {
-        project.metadata = {projectName:"failed to load"}
-      }
-      return meta.push(project)
-    }));
+    await Promise.all(
+      results.map(async (proj) => {
+        let status: ProjectStatus = ProjectStatus.PENDING;
+
+        if (proj.deployAddress != "0x0000000000000000000000000000000000000000") {
+          status = ProjectStatus.ACTIVE;
+        }
+
+        const project: Project = {
+          metadataURI: proj.metadataURI,
+          metadata: {},
+          forVotes: proj.forVotes,
+          againstVotes: proj.againstVotes,
+          deployAddress: proj.deployAddress,
+          status: status,
+        };
+
+        await axios.get("https://ipfs.io/ipfs/" + project.metadataURI)
+        .then(data => {
+          project.metadata = data.data
+        }).catch(e => {
+          project.metadata.projectName = "Error"
+        })
+
+        meta.push(project);
+      })
+    );
     return meta;
   }
 );
@@ -77,10 +80,10 @@ export const projectsSlice = createSlice({
     );
     builder.addCase(getProjectsByIndex.fulfilled, (state, action) => {
       action.payload.map((contractProject) => {
-        console.log(contractProject)
+        console.log(contractProject);
         const project: Project = {
           metadataURI: contractProject.metadataURI,
-          metadata: contractProject.metadata
+          metadata: contractProject.metadata,
         };
         state.projects.push(project);
       });

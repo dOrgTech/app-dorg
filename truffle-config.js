@@ -3,7 +3,7 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 dotenv.config();
 
-const mnemonic = process.env.NMEMONIC;
+const mnemonic = process.env.MNEMONIC;
 
 module.exports = {
   networks: {
@@ -16,7 +16,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider({
           mnemonic: {
-            phrase: mnemonic.toString(),
+            phrase: mnemonic,
           },
           providerOrUrl:
             "https://rinkeby.infura.io/v3/811d39a9e58e4555b9b91707fa36bb60",

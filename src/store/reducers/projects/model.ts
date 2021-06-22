@@ -11,6 +11,9 @@ export interface Project {
   metadata?: any;
   owners?: string[];
   sourcingWallet?: string;
+  deployAddress?: string;
+  forVotes?: BigNumberish;
+  againstVotes?: BigNumberish;
   threshold?: BigNumberish;
   status?: ProjectStatus;
   name?: string;

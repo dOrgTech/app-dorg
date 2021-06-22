@@ -26,7 +26,7 @@ contract dOrgProjectFactory {
     address public immutable treasuryWallet;
     address public immutable dOrgProjectLogic;
     address public immutable gnosisLogic;
-
+    
     struct Project {
         uint256 id;
         string metadataURI;
