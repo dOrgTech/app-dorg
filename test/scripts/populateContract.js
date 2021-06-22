@@ -7,12 +7,11 @@
 const dOrgProjectFactory = artifacts.require("dOrgProjectFactory");
 const { create } = require("../../node_modules/ipfs-http-client");
 const client = create("http://127.0.0.1:5001");
-const proposal = require('../ProjectMetadata.json');
+const proposal = require('../ProposalMetaData.json');
 
 module.exports = async function(callback){
 
     let factory = await dOrgProjectFactory.deployed();
-    console.log(factory.address)
     const accounts = await web3.eth.getAccounts();
     let senderWallet = accounts[0];
     let finderWallet = accounts[1];
@@ -22,12 +21,15 @@ module.exports = async function(callback){
     let threshold = 2;
     
     for(var i = 0; i<10; i++){
-        let projIndex = await factory.getProjectIndex()
-        console.log(proposal)
         const ipfsPath = await client.add(JSON.stringify(proposal),{pin:true});
-        let res = await factory.newProject(ipfsPath['path'], gnosisOwners, finderWallet, threshold, {from:accounts[0]}).catch(console.log);
-        projIndex = await factory.getProjectIndex()
-        const proj = await factory.getProject(projIndex.toNumber()).then(console.log).catch(console.log)
+        let res = await factory.newProposal(ipfsPath['path'], {from:accounts[0]}).catch(console.log);
     }
+
+    await Promise.all([1,2,5,7].map(async (x) => {
+        await factory.vote(x, true,  {from:accounts[0]})
+        await factory.newProject(x, finderWallet, gnosisOwners, threshold, {from:accounts[0]})
+        const proj = await factory.Projects.call(x)
+    })).catch(console.log)
+
     callback()
 }
