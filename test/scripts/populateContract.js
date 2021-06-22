@@ -20,16 +20,16 @@ module.exports = async function(callback){
     let gnosisOwners = [wallet1, wallet2];
     let threshold = 2;
     
-    for(var i = 0; i<10; i++){
+    await Promise.all([1,2,3,4,5,6,7,8,9,10].map(async(x) => {
         const ipfsPath = await client.add(JSON.stringify(proposal),{pin:true});
-        let res = await factory.newProposal(ipfsPath['path'], {from:accounts[0]}).catch(console.log);
-    }
+        let res = await factory.newProposal(ipfsPath['path'], {from: senderWallet}).catch(console.log);
+    }))
 
     await Promise.all([1,2,5,7].map(async (x) => {
         await factory.vote(x, true,  {from:accounts[0]})
         await factory.newProject(x, finderWallet, gnosisOwners, threshold, {from:accounts[0]})
         const proj = await factory.Projects.call(x)
     })).catch(console.log)
-
+    
     callback()
 }

@@ -177,4 +177,34 @@ contract dOrgProjectFactory {
         Proposals[proposalID].voters.push(msg.sender);
     }
 
+    function getProjects(uint256 startIndex, uint256 endIndex)
+        public
+        view
+        returns (Project[] memory)
+    {
+        uint256 arraySize = 1 + endIndex - startIndex;
+        require(arraySize > 0, 'Invalid start or end index.');
+        require(endIndex <= projectIndex, 'End index out of range.');
+        Project[] memory projectSlice = new Project[](arraySize);
+        for (uint256 i = 0; i < arraySize; i++) {
+            projectSlice[i] = Projects[startIndex + i];
+        }
+        return projectSlice;
+    }
+
+    function getProposals(uint256 startIndex, uint256 endIndex)
+        public
+        view
+        returns (Proposal[] memory)
+    {
+        uint256 arraySize = 1 + endIndex - startIndex;
+        require(arraySize > 0, 'Invalid start or end index.');
+        require(endIndex <= proposalIndex, 'End index out of range.');
+        Proposal[] memory proposalSlice = new Proposal[](arraySize);
+        for (uint256 i = 0; i < arraySize; i++) {
+            proposalSlice[i] = Proposals[startIndex + i];
+        }
+        return proposalSlice;
+    }
+
 }

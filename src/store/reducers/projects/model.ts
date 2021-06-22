@@ -7,7 +7,7 @@ export enum ProjectStatus {
 
 export interface Project {
   id?: string;
-  metadataURI: string;
+  metadataURI?: string;
   metadata?: any;
   owners?: string[];
   sourcingWallet?: string;

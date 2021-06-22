@@ -8,6 +8,8 @@ import { COLORS } from "../../utils/colors";
 import { ActiveButton } from "../button/ActiveButton";
 import { VotingProcess } from "../voting/VotingProcess";
 import { Proposal } from "../../store/reducers/proposals/model";
+import { generateFromString } from "generate-avatar";
+import { createDeflate } from "zlib";
 
 interface ProposalCardProps {
   proposal: Proposal;
@@ -69,7 +71,10 @@ const useStyles = makeStyles({
 export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
   const classes = useStyles();
 
-  const { againstVotes, forVotes, totalVotes, title, voters } = proposal;
+  const { againstVotes, forVotes, totalVotes, title, voters, createdAt } =
+    proposal;
+
+  const timeString: string = createdAt!.toString();
 
   return (
     <Card className={classes.root}>
@@ -101,24 +106,34 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
             className={[classes.splitItem, classes.greyContainer].join(" ")}
           >
             <Typography variant="subtitle2">Expires in:</Typography>
-            {/* TODO: calculate and format time left for expire */}
-            <TimeText time="00:00:00:00" />
+            {createdAt ? (
+              <TimeText time={new Date(createdAt).toString()} />
+            ) : null}
           </Grid>
           <Grid item xs={6} className={classes.splitItem}>
             <Typography variant="subtitle2">Votes:</Typography>
             <AvatarGroup>
-              {voters.map((voter, index) => (
-                <Avatar src={voter} key={index} alt="avatar" />
-              ))}
+              {voters ? (
+                voters.map((voter, index) => (
+                  <Avatar
+                    src={`data:image/svg+xml;utf8,${generateFromString(voter)}`}
+                    key={index}
+                    alt="avatar"
+                  />
+                ))
+              ) : (
+                <div />
+              )}
             </AvatarGroup>
           </Grid>
         </Grid>
-
-        <VotingProcess
-          totalVotes={totalVotes}
-          againstVotes={againstVotes}
-          forVotes={forVotes}
-        />
+        {forVotes != undefined && againstVotes != undefined ? (
+          <VotingProcess
+            totalVotes={forVotes + againstVotes}
+            againstVotes={againstVotes}
+            forVotes={forVotes}
+          />
+        ) : null}
         <ActiveButton className={classes.projectButton} variant="outlined">
           View Project
         </ActiveButton>

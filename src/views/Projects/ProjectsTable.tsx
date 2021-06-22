@@ -13,10 +13,12 @@ import AvatarImg from "../../assets/images/avatar.png";
 import { AvatarGroup } from "../../components/avatar/AvatarGroup";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { COLORS } from "../../utils/colors";
-import { ProjectStatusChip } from "./ProjectStatusChip";
+import { ProposalStatusChip } from "./ProposalStatusChip";
 import { useRootDispatch, useRootSelector } from "../../store";
-import { getProjectsByIndex } from "../../store/reducers/projects/projectsSlice";
+import { getAllProjects } from "../../store/reducers/projects/projectsSlice";
 import { ProjectsTableFilters } from "./ProjectsTableFilters";
+import { BigNumber } from "ethers";
+import { generateFromString } from "generate-avatar";
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -56,7 +58,7 @@ export const ProjectsTable = () => {
   const rows = useRootSelector((state) => state.projects.projects);
 
   useEffect(() => {
-    dispatch(getProjectsByIndex({ startIndex: 1, endIndex: 10 }));
+    dispatch(getAllProjects());
   }, []);
 
   return (
@@ -81,17 +83,17 @@ export const ProjectsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.metadata.projectName}>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
                 <TableCell>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                    <img
+                    {/* <img
                       className={classes.logo}
                       src={"https://ipfs.io/ipfs/" + row.metadata.projectLogo}
                       alt="logo"
-                    />
+                    /> */}
                     <Typography variant="h4" className={classes.projectTitle}>
-                      {row.metadata.projectName}
+                      {row.deployAddress}
                     </Typography>
                   </Box>
                 </TableCell>
@@ -107,13 +109,19 @@ export const ProjectsTable = () => {
                   <AvatarGroup>
                     {row.owners
                       ? row.owners.map((member, index) => (
-                          <Avatar src={member} key={index} alt="avatar" />
+                          <Avatar
+                            src={`data:image/svg+xml;utf8,${generateFromString(
+                              member
+                            )}`}
+                            key={index}
+                            alt="avatar"
+                          />
                         ))
                       : []}
                   </AvatarGroup>
                 </TableCell>
                 <TableCell>
-                  <ProjectStatusChip status={row.status} />
+                  <ProposalStatusChip status={row.status} />
                 </TableCell>
               </TableRow>
             ))}

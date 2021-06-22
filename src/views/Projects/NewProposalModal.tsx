@@ -12,8 +12,8 @@ import ChevronRightTwoToneIcon from "@material-ui/icons/ChevronRightTwoTone";
 import { BasicButton } from "../../components/button/BasicButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { useRootDispatch } from "../../store";
-import { createProject } from "../../store/reducers/projects/projectsSlice";
-import { Project, ProjectStatus } from "../../store/reducers/projects/model";
+import { createProposal } from "../../store/reducers/proposals/proposalSlice";
+import { Proposal } from "../../store/reducers/proposals/model";
 import { BigNumber } from "ethers";
 
 interface NewProjectModalProps {
@@ -46,14 +46,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const [builders, setBuilders] = useState<string[]>([]);
 
   const handleSubmit = () => {
-    const project: Project = {
-      metadataURI: "",
-      owners: builders,
-      threshold: BigNumber.from(1),
-      sourcingWallet,
-      status: ProjectStatus.PENDING,
-    };
-    dispatch(createProject(project));
+    dispatch(createProposal(""));
   };
 
   return (

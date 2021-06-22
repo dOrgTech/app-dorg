@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { ActiveButton } from "../../components/button/ActiveButton";
@@ -7,34 +7,9 @@ import { ProposalCard } from "../../components/card/ProposalCard";
 import { Proposal } from "../../store/reducers/proposals/model";
 import AvatarImg from "../../assets/images/avatar.png";
 import { ProjectsTable } from "./ProjectsTable";
-import { NewProjectModal } from "./NewProjectModal";
-
-const proposals: Proposal[] = [
-  {
-    totalVotes: 10,
-    forVotes: 3,
-    againstVotes: 7,
-    voters: [AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg],
-    title: "Proposal",
-    expire: new Date("2021-07-23"),
-  },
-  {
-    totalVotes: 13,
-    forVotes: 7,
-    againstVotes: 6,
-    voters: [AvatarImg],
-    title: "Proposal",
-    expire: new Date("2021-07-23"),
-  },
-  {
-    totalVotes: 10,
-    forVotes: 5,
-    againstVotes: 5,
-    voters: [AvatarImg],
-    title: "Proposal",
-    expire: new Date("2021-07-23"),
-  },
-];
+import { NewProjectModal } from "./NewProposalModal";
+import { useRootDispatch, useRootSelector } from "../../store";
+import { getAllProposals } from "../../store/reducers/proposals/proposalSlice";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -51,12 +26,19 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const ProjectsView: React.FC = () => {
+export const ProposalsView: React.FC = () => {
   const classes = useStyles();
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false);
 
   const handleOpenModal = () => setNewProjectModalOpen(true);
   const handleCloseModal = () => setNewProjectModalOpen(false);
+
+  const proposals = useRootSelector((state) => state.proposals.proposals);
+  const dispatch = useRootDispatch();
+  console.log(proposals);
+  useEffect(() => {
+    dispatch(getAllProposals());
+  }, []);
 
   return (
     <div>

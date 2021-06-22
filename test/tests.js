@@ -7,7 +7,7 @@ const { ethers } = require("ethers");
 const { create } = require("ipfs-http-client");
 const client = create("http://127.0.0.1:5001");
 const fs = require("fs");
-let proposal = JSON.parse(fs.readFileSync("./test/ProjectMetadata.json"));
+let proposal = JSON.parse(fs.readFileSync("./test/ProposalMetadata.json"));
 const truffleAssert = require("truffle-assertions");
 const gnosisABI =
   require("../safe-contracts/deployments/localhost/GnosisSafe.json")["abi"];
