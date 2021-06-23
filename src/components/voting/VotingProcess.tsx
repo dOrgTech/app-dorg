@@ -6,6 +6,7 @@ import { COLORS } from "../../utils/colors";
 import { Progress } from "../Progress";
 
 interface VotingProcessProps {
+  proposalID: number;
   againstVotes: number;
   forVotes: number;
   totalVotes: number;
@@ -67,6 +68,7 @@ export const VotingProcess: React.FC<VotingProcessProps> = ({
   againstVotes,
   forVotes,
   totalVotes,
+  proposalID,
 }) => {
   const classes = useStyles();
 
@@ -89,7 +91,7 @@ export const VotingProcess: React.FC<VotingProcessProps> = ({
         {result}
       </Box>
       <Box display="grid" gridTemplateColumns="48px auto 48px" marginTop="8px">
-        <VoteButton down />
+        <VoteButton down proposalID={proposalID} />
         <Box
           display="grid"
           gridTemplateColumns="calc(50% - 1px) 2px calc(50% - 1px)"
@@ -149,7 +151,7 @@ export const VotingProcess: React.FC<VotingProcessProps> = ({
             </Grid>
           </Grid>
         </Box>
-        <VoteButton />
+        <VoteButton proposalID={proposalID} />
       </Box>
     </div>
   );

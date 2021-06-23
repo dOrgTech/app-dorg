@@ -71,7 +71,7 @@ const useStyles = makeStyles({
 export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
   const classes = useStyles();
 
-  const { againstVotes, forVotes, totalVotes, title, voters, createdAt } =
+  const { id, againstVotes, forVotes, totalVotes, title, voters, createdAt } =
     proposal;
 
   const timeString: string = createdAt!.toString();
@@ -132,6 +132,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({ proposal }) => {
             totalVotes={forVotes + againstVotes}
             againstVotes={againstVotes}
             forVotes={forVotes}
+            proposalID={id}
           />
         ) : null}
         <ActiveButton className={classes.projectButton} variant="outlined">

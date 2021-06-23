@@ -20,7 +20,7 @@ module.exports = async function(callback){
     let gnosisOwners = [wallet1, wallet2];
     let threshold = 2;
     
-    await Promise.all([1,2,3,4,5,6,7,8,9,10].map(async(x) => {
+    await Promise.all([1,2,3,4,5,6,7].map(async(x) => {
         const ipfsPath = await client.add(JSON.stringify(proposal),{pin:true});
         let res = await factory.newProposal(ipfsPath['path'], {from: senderWallet}).catch(console.log);
     }))

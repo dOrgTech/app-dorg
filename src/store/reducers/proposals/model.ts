@@ -1,4 +1,5 @@
 export interface Proposal {
+  id: number;
   title?: string;
   createdAt?: number;
   voters?: string[];

@@ -10,6 +10,12 @@ export async function createNewProposal(metadataURI: string) {
     gasLimit: 1000000,
   });
 }
+export async function voteProposal(id: number, v: boolean) {
+  const signer = getSigner();
+  const dOrgProjectFactory = getDOrgProjectFactoryContract(signer);
+  const results = await dOrgProjectFactory.vote(id, v);
+  return results;
+}
 
 export async function allProposals() {
   const signer = getSigner();
