@@ -5,7 +5,7 @@ import { ProjectStatus } from "../../store/reducers/projects/model";
 import { COLORS } from "../../utils/colors";
 
 interface ProjectStatusProps {
-  status: ProjectStatus;
+  status?: ProjectStatus;
 }
 
 const useStyles = makeStyles<Theme, { dark: string; light: string }>({
@@ -34,7 +34,9 @@ const useStyles = makeStyles<Theme, { dark: string; light: string }>({
   }),
 });
 
-export const ProjectStatusChip: React.FC<ProjectStatusProps> = ({ status }) => {
+export const ProposalStatusChip: React.FC<ProjectStatusProps> = ({
+  status,
+}) => {
   const getColor = () => {
     if (status === ProjectStatus.ACTIVE)
       return { light: COLORS.green["50"], dark: COLORS.green["600"] };

@@ -1,7 +1,8 @@
+/* eslint-disable */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Project } from "./model";
-import { deployProjectContract } from "../../../services/projects";
-import { getSigner } from "../../../services/ethereum";
+import { Project, ProjectStatus } from "./model";
+import { allProjects, getProjectIndex } from "../../../services/projects";
+import { BigNumber } from "ethers";
 
 interface ProjectsReducerState {
   projects: Project[];
@@ -11,14 +12,11 @@ const projectsReducerInitialState: ProjectsReducerState = {
   projects: [],
 };
 
-export const createProject = createAsyncThunk(
-  "projects/create",
-  async (project: Project) => {
-    const signer = getSigner();
-    const transaction = await deployProjectContract(signer, project);
-    const receipt = await transaction.wait();
-    console.log("transaction receipt: ", receipt);
-    return project;
+export const getAllProjects = createAsyncThunk(
+  "projects/getprojects",
+  async () => {
+    const results = await allProjects();
+    return results;
   }
 );
 
@@ -27,11 +25,14 @@ export const projectsSlice = createSlice({
   initialState: projectsReducerInitialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(
-      createProject.fulfilled,
-      (state, action: PayloadAction<Project>) => {
-        state.projects.push(action.payload);
-      }
-    );
+    builder.addCase(getAllProjects.fulfilled, (state, action) => {
+      action.payload.map((contractProject) => {
+        let project: Project = {
+          deployAddress: contractProject.deployAddress,
+          owners: contractProject.owners,
+        };
+        state.projects.push(project);
+      });
+    });
   },
 });

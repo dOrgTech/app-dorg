@@ -1,4 +1,4 @@
-import { BigNumberish } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 
 export enum ProjectStatus {
   ACTIVE,
@@ -6,12 +6,18 @@ export enum ProjectStatus {
 }
 
 export interface Project {
-  name: string;
-  members: string[];
-  status: ProjectStatus;
-  sourcingWallet: string;
-  threshold: BigNumberish;
+  id?: string;
+  metadataURI?: string;
+  metadata?: any;
+  owners?: string[];
+  sourcingWallet?: string;
+  deployAddress?: string;
+  forVotes?: BigNumberish;
+  againstVotes?: BigNumberish;
+  threshold?: BigNumberish;
+  status?: ProjectStatus;
+  name?: string;
   logo?: string;
-  totalInvoiced?: number;
+  totalInvoiced?: BigNumberish;
   totalUnit?: string;
 }

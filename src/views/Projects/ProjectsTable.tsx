@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -13,8 +13,12 @@ import AvatarImg from "../../assets/images/avatar.png";
 import { AvatarGroup } from "../../components/avatar/AvatarGroup";
 import { Avatar, Box, Typography } from "@material-ui/core";
 import { COLORS } from "../../utils/colors";
-import { ProjectStatusChip } from "./ProjectStatusChip";
+import { ProposalStatusChip } from "./ProposalStatusChip";
+import { useRootDispatch, useRootSelector } from "../../store";
+import { getAllProjects } from "../../store/reducers/projects/projectsSlice";
 import { ProjectsTableFilters } from "./ProjectsTableFilters";
+import { BigNumber } from "ethers";
+import { generateFromString } from "generate-avatar";
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -48,31 +52,14 @@ const useStyles = makeStyles({
   },
 });
 
-const rows: Project[] = [
-  {
-    name: "Badger DAO",
-    logo: BadgerLogo,
-    totalInvoiced: 55302,
-    totalUnit: "xDAI",
-    sourcingWallet: "0x00",
-    threshold: 1,
-    members: [AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg, AvatarImg],
-    status: ProjectStatus.ACTIVE,
-  },
-  {
-    name: "Badger DAO 2",
-    logo: BadgerLogo,
-    totalInvoiced: 55302,
-    totalUnit: "xDAI",
-    sourcingWallet: "0x00",
-    threshold: 1,
-    members: [AvatarImg, AvatarImg],
-    status: ProjectStatus.PENDING,
-  },
-];
-
 export const ProjectsTable = () => {
   const classes = useStyles();
+  const dispatch = useRootDispatch();
+  const rows = useRootSelector((state) => state.projects.projects);
+
+  useEffect(() => {
+    dispatch(getAllProjects());
+  }, []);
 
   return (
     <>
@@ -91,18 +78,22 @@ export const ProjectsTable = () => {
               <TableCell className={classes.tableHeaderCell}>
                 Total Invoiced
               </TableCell>
-              <TableCell className={classes.tableHeaderCell}>Members</TableCell>
+              <TableCell className={classes.tableHeaderCell}>owners</TableCell>
               <TableCell className={classes.tableHeaderCell}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name}>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
                 <TableCell>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                    <img className={classes.logo} src={row.logo} alt="logo" />
+                    {/* <img
+                      className={classes.logo}
+                      src={"https://ipfs.io/ipfs/" + row.metadata.projectLogo}
+                      alt="logo"
+                    /> */}
                     <Typography variant="h4" className={classes.projectTitle}>
-                      {row.name}
+                      {row.deployAddress}
                     </Typography>
                   </Box>
                 </TableCell>
@@ -116,13 +107,21 @@ export const ProjectsTable = () => {
                 </TableCell>
                 <TableCell>
                   <AvatarGroup>
-                    {row.members.map((member, index) => (
-                      <Avatar src={member} key={index} alt="avatar" />
-                    ))}
+                    {row.owners
+                      ? row.owners.map((member, index) => (
+                          <Avatar
+                            src={`data:image/svg+xml;utf8,${generateFromString(
+                              member
+                            )}`}
+                            key={index}
+                            alt="avatar"
+                          />
+                        ))
+                      : []}
                   </AvatarGroup>
                 </TableCell>
                 <TableCell>
-                  <ProjectStatusChip status={row.status} />
+                  <ProposalStatusChip status={row.status} />
                 </TableCell>
               </TableRow>
             ))}

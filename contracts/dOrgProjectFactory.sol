@@ -26,24 +26,32 @@ contract dOrgProjectFactory {
     address public immutable treasuryWallet;
     address public immutable dOrgProjectLogic;
     address public immutable gnosisLogic;
-
-    struct Project {
+    
+    struct Proposal {
         uint256 id;
+        address creator; 
         string metadataURI;
         uint256 forVotes;
         uint256 againstVotes;
         uint256 createdAt;
+        address[] voters;
+        uint256 projectID;
+    }
+
+    struct Project {
+        uint256 id;
+        address finder;
+        address[] owners;
+        uint256 threshold;
+        uint256 proposalID;
         address deployAddress;
     }
 
     uint256 public projectIndex = 0;
+    uint256 public proposalIndex = 0;
+
     mapping(uint256 => Project) public Projects;
-    mapping(uint256 => mapping(address => bool)) public Votes;
-    mapping(uint256 => address[]) public Voters;
-    mapping(uint256 => address[]) public Owners;
-    mapping(uint256 => address) public Finders;
-    mapping(uint256 => uint256) public Thresholds;
-    mapping(uint256 => address) public GnosisSafes;
+    mapping(uint256 => Proposal) public Proposals;
 
     constructor(address _gnosisLogic) {
         treasuryWallet = address(0x15344EcDc2c4EDFCB092E284d93c20F0529FD8a6);
@@ -51,37 +59,122 @@ contract dOrgProjectFactory {
         gnosisLogic = _gnosisLogic;
     }
 
-    function newProject(
-        string memory metadataURI,
-        address[] memory owners,
-        address finder,
-        uint256 threshold
-    ) public {
-        projectIndex++;
-        Owners[projectIndex] = owners;
-        Finders[projectIndex] = finder;
-        Thresholds[projectIndex] = threshold;
-        Projects[projectIndex] = Project(
-            projectIndex,
+    /**
+    *
+    * Create a proposal.
+    *
+    **/
+
+    function newProposal(string memory metadataURI) public {
+        proposalIndex++;
+        address[] memory voters;
+        Proposals[proposalIndex] = Proposal(
+            proposalIndex,
+            msg.sender,
             metadataURI,
             0,
             0,
             block.timestamp,
-            address(0)
+            voters,
+            0
         );
     }
 
-    function getProjectIndex() public view returns (uint256){
-        return projectIndex;
+    /**
+    * Attach a project to a proposal.
+    * Requires: 1) creator of proposal is creating the project
+    *           2) project hasn't already been created
+    *           3) proposal has enough votes 
+    *           4) voting window closed
+    **/
+
+    function newProject(
+        uint256 proposalID,
+        address finder,
+        address[] memory owners,
+        uint256 threshold
+    ) public {
+        projectIndex++;
+
+        require(Proposals[proposalID].creator == msg.sender, 'Proposal creator must create project.');
+        require(Proposals[proposalID].projectID == 0, 'Project already created');
+        require(
+            Proposals[proposalID].forVotes > Proposals[proposalID].againstVotes,
+            "Proposal not passing."
+        );
+        /*
+        * require(
+        *    block.timestamp > Proposals[proposalID].createdAt,
+        *    "Voting period has note yet closed."
+        *);
+        */
+        Proposals[proposalID].projectID = projectIndex;
+        Projects[projectIndex] = Project(
+            projectIndex,
+            finder,
+            owners,
+            threshold,
+            proposalID,
+            address(0)
+        );
+        deployProject(projectIndex);
     }
 
-    function getProject(uint256 i) public view returns (Project memory) {
-        require(Projects[i].id != 0, 'Project does not exist.');
-        return Projects[i];
+    /**
+    * Once project has been attached to proposal, it can be deployed
+    * This will generate a deploy address for the project.
+    **/
+
+    function deployProject(
+        uint256 projectID
+    ) private {
+
+        address payable gnosisSafe;
+        gnosisSafe = payable(Clones.clone(gnosisLogic));
+
+        GnosisSafe(gnosisSafe).setup(
+            Projects[projectID].owners,
+            Projects[projectID].threshold,
+            address(0),
+            "",
+            address(0),
+            address(0),
+            0,
+            payable(address(0))
+        );
+
+        address[] memory payees = new address[](3);
+        uint256[] memory shares = new uint256[](3);
+
+        payees[0] = treasuryWallet;
+        payees[1] = Projects[projectID].finder;
+        payees[2] = gnosisSafe;
+
+        shares[0] = 10;
+        shares[1] = 10;
+        shares[2] = 80;
+
+        address payable project;
+        project = payable(Clones.clone(dOrgProjectLogic));
+        dOrgProject(project).initialize(payees, shares);
+
+        Projects[projectID].deployAddress = project;
     }
 
-    function getProjectGnosisSafe(uint256 i) public view returns (address) {
-        return GnosisSafes[i];
+    function vote(uint256 proposalID, bool approval) public {
+        for(uint i = 0; i<Proposals[proposalID].voters.length; i++){
+            require(Proposals[proposalID].voters[i] != msg.sender, 'Cannot vote twice.');
+        }
+        require(
+            block.timestamp < Proposals[proposalID].createdAt + 604800,
+            "Voting period has closed."
+        );
+        if (approval == true) {
+            Proposals[proposalID].forVotes += 1;
+        } else {
+            Proposals[proposalID].againstVotes += 1;
+        }
+        Proposals[proposalID].voters.push(msg.sender);
     }
 
     function getProjects(uint256 startIndex, uint256 endIndex)
@@ -99,89 +192,19 @@ contract dOrgProjectFactory {
         return projectSlice;
     }
 
-    function getVoters(uint256 i) public view returns (address[] memory) {
-        return Voters[i];
-    }
-
-    function getVote(uint256 i, address voter) public view returns (bool) {
-        require(
-            Votes[i][voter],
-            "This address has not voted on the specified proposal."
-        );
-        return Votes[i][voter];
-    }
-
-    function vote(uint256 i, bool approval) public {
-        for(uint v = 0; v<Voters[i].length; v++){
-            require(Voters[i][v] != msg.sender, 'Cannot vote twice.');
+    function getProposals(uint256 startIndex, uint256 endIndex)
+        public
+        view
+        returns (Proposal[] memory)
+    {
+        uint256 arraySize = 1 + endIndex - startIndex;
+        require(arraySize > 0, 'Invalid start or end index.');
+        require(endIndex <= proposalIndex, 'End index out of range.');
+        Proposal[] memory proposalSlice = new Proposal[](arraySize);
+        for (uint256 i = 0; i < arraySize; i++) {
+            proposalSlice[i] = Proposals[startIndex + i];
         }
-        require(
-            block.timestamp < Projects[i].createdAt + 604800,
-            "Voting period has closed."
-        );
-        if (approval == true) {
-            Projects[i].forVotes += 1;
-        } else {
-            Projects[i].againstVotes += 1;
-        }
-        Votes[i][msg.sender] = approval;
-        Voters[i].push(msg.sender);
+        return proposalSlice;
     }
 
-    function deployProject(uint256 i) public {
-        require(
-            Projects[i].forVotes > Projects[i].againstVotes,
-            "Project proposal not passing."
-        );
-        require(
-            Projects[i].deployAddress == address(0),
-            "Project already deployed."
-        );
-        /*
-         * require(
-         *    block.timestamp > Projects[i].createdAt + 604800,
-         *    "Voting period has note yet closed."
-         * );
-         */
-        createProject(Finders[i], Owners[i], Thresholds[i], i);
-    }
-
-    function createProject(
-        address finderWallet,
-        address[] memory owners,
-        uint256 threshold,
-        uint256 i
-    ) private {
-        address payable gnosisSafe;
-        gnosisSafe = payable(Clones.clone(gnosisLogic));
-
-        GnosisSafe(gnosisSafe).setup(
-            owners,
-            threshold,
-            address(0),
-            "",
-            address(0),
-            address(0),
-            0,
-            payable(address(0))
-        );
-
-        address[] memory payees = new address[](3);
-        uint256[] memory shares = new uint256[](3);
-
-        payees[0] = treasuryWallet;
-        payees[1] = finderWallet;
-        payees[2] = gnosisSafe;
-
-        shares[0] = 10;
-        shares[1] = 10;
-        shares[2] = 80;
-
-        address payable project;
-        project = payable(Clones.clone(dOrgProjectLogic));
-        dOrgProject(project).initialize(payees, shares);
-
-        Projects[i].deployAddress = project;
-        GnosisSafes[i] = gnosisSafe;
-    }
 }
